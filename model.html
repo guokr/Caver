@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Models &mdash; caver 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Classify and Ensemble" href="classify.html" />
+    <link rel="prev" title="Detail" href="detail.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> caver
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="detail.html">Detail</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basemodule">BaseModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cnn">CNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lstm">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#swen">SWEN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#han">HAN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="classify.html">Classify and Ensemble</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">caver</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-caver">
+<span id="models"></span><h1>Models<a class="headerlink" href="#module-caver" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basemodule">
+<h2>BaseModule<a class="headerlink" href="#basemodule" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.model.base.BaseModule">
+<em class="property">class </em><code class="descclassname">caver.model.base.</code><code class="descname">BaseModule</code><a class="reference internal" href="_modules/caver/model/base.html#BaseModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.base.BaseModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base module for text classification.</p>
+<p>Inherit this if you want to implement your own model.</p>
+<dl class="method">
+<dt id="caver.model.base.BaseModule.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/base.html#BaseModule.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.base.BaseModule.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>load model from file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="caver.model.base.BaseModule.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/base.html#BaseModule.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.base.BaseModule.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save model to file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cnn">
+<h2>CNN<a class="headerlink" href="#cnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.model.cnn.CNN">
+<em class="property">class </em><code class="descclassname">caver.model.cnn.</code><code class="descname">CNN</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/cnn.html#CNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.cnn.CNN" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filter_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of filter</li>
+<li><strong>filter_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – size of filter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This is the implementation of CNN from <a class="reference external" href="https://arxiv.org/pdf/1408.5882.pdf">cnn_paper</a>:
+Kim, Yoon. “Convolutional neural networks for sentence classification.” arXiv preprint arXiv:1408.5882 (2014).</p>
+<p>text -&gt; embedding -&gt; conv -&gt; relu -&gt; BatchNorm -&gt; max_pool -&gt; mlp -&gt; sigmoid</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lstm">
+<h2>LSTM<a class="headerlink" href="#lstm" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.model.lstm.LSTM">
+<em class="property">class </em><code class="descclassname">caver.model.lstm.</code><code class="descname">LSTM</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/lstm.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.lstm.LSTM" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – hidden layer dimension</li>
+<li><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – num of hidden layer</li>
+<li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Simpole LSTM model</p>
+<p>text -&gt; embedding -&gt; lstm -&gt; mlp -&gt; sigmoid</p>
+</dd></dl>
+
+</div>
+<div class="section" id="swen">
+<h2>SWEN<a class="headerlink" href="#swen" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.model.swen.SWEN">
+<em class="property">class </em><code class="descclassname">caver.model.swen.</code><code class="descname">SWEN</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/swen.html#SWEN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.swen.SWEN" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – avg_pool window</td>
+</tr>
+</tbody>
+</table>
+<p>This model is the implementation of SWEN-hier from <a class="reference external" href="https://arxiv.org/abs/1805.09843">swen_paper</a>:
+Shen, Dinghan, et al. “Baseline Needs More Love: On Simple Word-Embedding-Based Models and Associated Pooling Mechanisms.”</p>
+<p>text -&gt; embedding -&gt; avg_pool -&gt; max_pool -&gt; mlp -&gt; sigmoid</p>
+</dd></dl>
+
+</div>
+<div class="section" id="han">
+<h2>HAN<a class="headerlink" href="#han" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.model.han.HAN">
+<em class="property">class </em><code class="descclassname">caver.model.han.</code><code class="descname">HAN</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/han.html#HAN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.han.HAN" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – dimension of hidden layer</li>
+<li><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of hidden layer</li>
+<li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This model is the implementation of HAN(only word encoder and word attention)
+from <a class="reference external" href="http://www.aclweb.org/anthology/N16-1174">han_paper</a>:
+Yang, Zichao, et al. “Hierarchical attention networks for document classification.” Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies. 2016.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="caver.model.han.Attention">
+<em class="property">class </em><code class="descclassname">caver.model.han.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/han.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.han.Attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attention layer of HAN.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classify.html" class="btn btn-neutral float-right" title="Classify and Ensemble" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="detail.html" class="btn btn-neutral" title="Detail" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, keming.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

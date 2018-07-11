@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to caver’s doc! &mdash; caver 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Detail" href="detail.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> caver
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="detail.html">Detail</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classify.html">Classify and Ensemble</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">caver</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to caver’s doc!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/caver_index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-caver-s-doc">
+<h1>Welcome to caver’s doc!<a class="headerlink" href="#welcome-to-caver-s-doc" title="Permalink to this headline">¶</a></h1>
+<p><cite>Caver</cite> is a multilabel text classification toolkit based on <cite>Pytorch</cite>.</p>
+<blockquote>
+<div>Raising a torch to explore the cave.</div></blockquote>
+<div class="section" id="why-we-need-this">
+<h2>Why we need this?<a class="headerlink" href="#why-we-need-this" title="Permalink to this headline">¶</a></h2>
+<p>Multilabel text classification is widely used in text-based recommendation
+system, anti-spam, sentiment analysis and so on. Some basic machine learning
+methods like SVM, Naive bayes can help us to find the category of text, but
+sentences usually belong to multi labels which is hard to extract all of them.
+Now we can use deep learning models to deal with it.</p>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Train text classifier</li>
+<li>Offer CNN, LSTM, HAN, SWEN etc.</li>
+<li>Get the feature vector of text</li>
+<li>Get the most possible labels for text</li>
+<li>Ensemble (soft voting)</li>
+</ul>
+</div>
+<div class="section" id="version">
+<h2>Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Python 3.5</li>
+<li>Pytorch 0.4</li>
+</ul>
+</div>
+<div class="section" id="tutorail">
+<h2>Tutorail<a class="headerlink" href="#tutorail" title="Permalink to this headline">¶</a></h2>
+<p>Before train the model, you need to prepare text data in the format like:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">__label__animal</span> <span class="n">__label__sports</span> <span class="n">The</span> <span class="n">quick</span> <span class="n">brown</span> <span class="n">fox</span> <span class="n">jumps</span> <span class="n">over</span> <span class="n">the</span> <span class="n">lazy</span> <span class="n">dog</span>
+</pre></div>
+</div>
+<p>Each line of text file cantains a list of labels and words separated by space.
+Each label is start with ‘__label__’.</p>
+<p>If you use Chinese, please segment the sentence into words or single word first,
+depends on which format you want.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">__label__animal</span> <span class="n">__label__sports</span> <span class="n">狐狸</span> <span class="n">跟</span> <span class="n">狗子</span> <span class="n">在</span> <span class="n">玩</span> <span class="n">跳山羊</span>
+</pre></div>
+</div>
+<div class="section" id="train">
+<h3>Train<a class="headerlink" href="#train" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">caver</span> <span class="k">import</span> <span class="n">Trainer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;CNN&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;data_path&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="o">......</span> <span class="c1"># kwargs will update the default value in config</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classify">
+<h3>Classify<a class="headerlink" href="#classify" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">caver</span> <span class="k">import</span> <span class="n">Caver</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span> <span class="o">=</span> <span class="n">Caver</span><span class="p">(</span><span class="s1">&#39;CNN&#39;</span><span class="p">,</span> <span class="s1">&#39;CNN_model.pth&#39;</span><span class="p">,</span> <span class="s1">&#39;data_path&#39;</span><span class="p">)</span>
+
+<span class="go"># predict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s1">&#39;The quick brown fox jumps over the lazy dog&#39;</span><span class="p">)</span>
+<span class="go">[1.0, 0.33, 0.15, 0.002, ......]</span>
+
+<span class="go"># get top label</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span><span class="o">.</span><span class="n">get_top_label</span><span class="p">(</span><span class="s1">&#39;The quick brown fox jumps over the lazy dog&#39;</span><span class="p">)</span>
+<span class="go">[[&#39;__label__animal&#39;, &#39;__label__sports&#39;, ......],</span>
+<span class="go">[1.0, 0.35, ......]]</span>
+
+<span class="go"># ensemble</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">caver</span> <span class="k">import</span> <span class="n">Ensemble</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lstm</span> <span class="o">=</span> <span class="n">Caver</span><span class="p">(</span><span class="s1">&#39;LSTM&#39;</span><span class="p">,</span> <span class="s1">&#39;LSTM_model.pth&#39;</span><span class="p">,</span> <span class="s1">&#39;data_path&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">([</span><span class="n">cnn</span><span class="p">,</span> <span class="n">lstm</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s1">&#39;The quick brown fox jumps over the lazy dog&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">get_top_label</span><span class="p">(</span><span class="s1">&#39;The quick brown fox jumps over the lazy dog&#39;</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="detail.html">Detail</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#module-caver">Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#module-caver.utils">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.html#basemodule">BaseModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#cnn">CNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#lstm">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#swen">SWEN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#han">HAN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="classify.html">Classify and Ensemble</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classify.html#trainer">Trainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classify.html#caver">Caver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classify.html#ensemble">Ensemble</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="detail.html" class="btn btn-neutral float-right" title="Detail" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, keming.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
