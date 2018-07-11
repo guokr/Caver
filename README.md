@@ -1,8 +1,8 @@
 # Caver: a toolkit for multilabel text classification.
 
-Rising a torch in cave to see the words on the wall. This is the caver.
+Rising a torch in the cave to see the words on the wall. This is the `Caver`.
 
-## Tutorail
+## Tutorial
 
 [Documents](https://guokr.github.io/Caver)
 
