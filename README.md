@@ -1,4 +1,4 @@
-# Caver: a toolkit for multiclass text classification.
+# Caver: a toolkit for multilabel text classification.
 
 Rising a torch in cave to see the words on the wall. This is the caver.
 
@@ -48,7 +48,7 @@ model.get_top_label('The quick brown fox jumps over the lazy dog', 'avg')
 * [x] ensemble: voting
 * [x] config
 * [x] model save and load
-* [x] models: cnn, lstm, swen, han
+* [x] models: CNN, LSTM, SWEN, HAN
 * [x] dropout
 * [ ] fastText support
 * [ ] docker
