@@ -1,0 +1,25 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+  - pip install -r requirements.txt
+  - pip install -r requirements_docs.txt
+  - pip install -e .
+
+script:
+  - pytest
+
+after_success:
+  - cd docs && make html
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  keep-history: true
+  on:
+    branch: master
+  github-token: $GITHUB_TOKEN
+  local-dir: docs/build/html
+  committer-from-gh: true
