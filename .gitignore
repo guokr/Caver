@@ -105,3 +105,4 @@ venv.bak/
 dest_dir/
 *.swp
 checkpoints/
+processed_data/

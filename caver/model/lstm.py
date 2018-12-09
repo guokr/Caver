@@ -25,15 +25,15 @@ class LSTM(BaseModule):
         # self.config = update_config(ConfigLSTM(), **kwargs)
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.layer_num = layer_num
-        self.bidirectional = False
+        self.bidirectional = True
         self.device = device
         self.hidden_dim = hidden_dim
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, self.layer_num,
                             # batch_first=True,
-                            bidirectional=False)
-        self.predictor = nn.Linear(hidden_dim, label_num)
+                            bidirectional=True)
+        self.predictor = nn.Linear(hidden_dim*2, label_num)
         # self.sigmoid = nn.Sigmoid()
 
     def init_hidden(self, batch_size):
@@ -54,8 +54,9 @@ class LSTM(BaseModule):
         # hidden = self.init_hidden(batch_size)
         embedded = self.embedding(sequence)
 
-        output, hidden = self.lstm(embedded)
-        output_feature = output[-1,:,:]
+        output, (hidden, cell) = self.lstm(embedded)
+        # output_feature = output[-1,:,:]
+        output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
         preds = self.predictor(output_feature)
         return preds
         # label = self.mlp(hidden[0].view(batch_size, -1))

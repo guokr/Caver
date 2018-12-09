@@ -7,20 +7,22 @@ import tqdm
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import dill as pickle
 
 from torchtext.data import Field, TabularDataset, BucketIterator
 from caver.model import LSTM
 from caver.utils import BatchWrapper
-
+import arrow
 
 parser = argparse.ArgumentParser(description="Caver training")
 parser.add_argument("--model", type=str, choices=["CNN", "LSTM"],
                     help="choose the model", default="LSTM")
-parser.add_argument("--data_dir", type=str, help="data dir")
+parser.add_argument("--input_data_dir", type=str, help="data dir")
 parser.add_argument("--train_filename", type=str, default="train.tsv")
 parser.add_argument("--valid_filename", type=str, default="valid.tsv")
 parser.add_argument("--epoch", type=int, help="number of epoches", default=10)
-parser.add_argument("--save_dir", type=str, default="checkpoints",
+parser.add_argument("--output_data_dir", type=str, default="processed_data")
+parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
                     help="dir for checkpoints saving")
 
 args = parser.parse_args()
@@ -29,11 +31,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def check_args():
     status = True
-    if not os.path.exists(os.path.join(args.data_dir, args.train_filename)):
+    if not os.path.exists(os.path.join(args.input_data_dir, args.train_filename)):
         status = False
         print("train file doesn't exist")
 
-    if not os.path.exists(os.path.join(args.data_dir, args.valid_filename)):
+    if not os.path.exists(os.path.join(args.input_data_dir, args.valid_filename)):
         status = False
         print("valid file doesn't exist")
 
@@ -41,14 +43,14 @@ def check_args():
         status = False
         print("Currently we dont support CPU training")
 
-    if os.path.isdir(args.save_dir) and len(os.listdir(args.save_dir)) != 0:
+    if os.path.isdir(args.checkpoint_dir) and len(os.listdir(args.checkpoint_dir)) != 0:
         status = False
         # exist but not empty
         print("save dir must be empty")
 
-    if not os.path.isdir(args.save_dir):
+    if not os.path.isdir(args.checkpoint_dir):
         print("Doesn't find the save dir, we will create a default one for you")
-        os.mkdir(args.save_dir)
+        os.mkdir(args.checkpoint_dir)
 
     return status
 
@@ -62,7 +64,7 @@ def preprocess():
 
     columns = []
 
-    with open(os.path.join(args.data_dir, args.train_filename)) as f_input:
+    with open(os.path.join(args.input_data_dir, args.train_filename)) as f_input:
         for row in islice(f_input, 0, 1):
             for _ in row.split("\t"):
                 columns.append(_)
@@ -78,8 +80,8 @@ def preprocess():
 #    tst_datafields = [("tokens", TEXT)]
 #    # print(tv_datafields)
 #    # print(y_feature)
-#
-    train_data, valid_data = TabularDataset.splits(path=args.data_dir,
+
+    train_data, valid_data = TabularDataset.splits(path=args.input_data_dir,
                                                    format="tsv",
                                                    train=args.train_filename,
                                                    validation=args.valid_filename,
@@ -95,12 +97,21 @@ def preprocess():
 
 #    # train_data, valid_data = source_data.split()
     TEXT.build_vocab(train_data)
+    pickle.dump(TEXT, open(os.path.join(args.output_data_dir, "TEXT.p"), "wb"))
+    pickle.dump(y_feature, open(os.path.join(args.output_data_dir, "y_feature.p"), "wb"))
+#    TEXT = pickle.load(open("ttt.p", "rb"))
+#    pickle.dump(train_data, open("train_ds.p", "wb"))
+#    pickle.dump(valid_data, open("valid_ds.p", "wb"))
+#
+#    train_data = pickle.load(open("train_ds.p", "rb"))
+#    valid_data = pickle.load(open("valid_ds.p", "rb"))
 
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
-                                batch_size=128,
+                                batch_size=64,
                                 device="cuda",
                                 sort_key=lambda x: len(x.tokens),
                                 sort_within_batch=True)
+    print(arrow.now())
 
     train_dataloader = BatchWrapper(train_iter, x_feature, y_feature)
     valid_dataloader = BatchWrapper(valid_iter, x_feature, y_feature)
@@ -159,9 +170,9 @@ def valid_step(model, valid_data, criterion, valid_loss_history, epoch):
 
     if len(valid_loss_history) == 0 or loss.item() < valid_loss_history[0]:
         torch.save(model.state_dict(),
-                   os.path.join(args.save_dir, "checkpoint_{}.pt".format(epoch)))
+                   os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
         torch.save(model.state_dict(),
-                   os.path.join(args.save_dir, "checkpoint_best.pt"))
+                   os.path.join(args.checkpoint_dir, "checkpoint_best.pt"))
         valid_loss_history.append(loss.item())
         valid_loss_history.sort()
 
