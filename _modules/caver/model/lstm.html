@@ -160,51 +160,52 @@
 <span class="sd">    :type layer_num: int</span>
 <span class="sd">    :param bidirectional: use bidirectional lstm layer?</span>
 <span class="sd">    :type bidirectional: bool</span>
-<span class="sd">    </span>
+
 <span class="sd">    Simpole LSTM model</span>
 
 <span class="sd">    text -&gt; embedding -&gt; lstm -&gt; mlp -&gt; sigmoid</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">label_num</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">layer_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">update_config</span><span class="p">(</span><span class="n">ConfigLSTM</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+        <span class="c1"># self.config = update_config(ConfigLSTM(), **kwargs)</span>
+        <span class="c1"># self.device = torch.device(&#39;cuda&#39; if torch.cuda.is_available() else &#39;cpu&#39;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_num</span> <span class="o">=</span> <span class="n">layer_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bidirectional</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">embedding_dim</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">embedding_dim</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">layer_num</span><span class="p">,</span>
-            <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">bidirectional</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">bidirectional</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">label_num</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_num</span><span class="p">,</span>
+                            <span class="c1"># batch_first=True,</span>
+                            <span class="n">bidirectional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">label_num</span><span class="p">)</span>
+        <span class="c1"># self.sigmoid = nn.Sigmoid()</span>
 
     <span class="k">def</span> <span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">layer_num</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">bidirectional</span> <span class="k">else</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_dim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layer_num</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bidirectional</span> <span class="k">else</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+
             <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">layer_num</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">bidirectional</span> <span class="k">else</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_dim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layer_num</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bidirectional</span> <span class="k">else</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
-        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">embedded</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">label</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="c1"># batch_size = sequence.size(0)</span>
+        <span class="c1"># hidden = self.init_hidden(batch_size)</span>
+        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+
+        <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">embedded</span><span class="p">)</span>
+        <span class="n">output_feature</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:]</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">output_feature</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">preds</span></div>
+        <span class="c1"># label = self.mlp(hidden[0].view(batch_size, -1))</span>
+        <span class="c1"># return self.sigmoid(label)</span>
 </pre></div>
 
            </div>
