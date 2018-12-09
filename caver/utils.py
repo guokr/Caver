@@ -1,6 +1,6 @@
 import numpy as np
 from torch import nn
-
+import torch
 def init_weight(layer):
     """
     Init layer weights and bias
@@ -102,7 +102,7 @@ def load_embedding(embedding_file, dim, vocab_size, index2word):
         a 0.223 0.566 ......
         b 0.754 0.231 ......
         ......
-    
+
     """
     word2vec = {}
     with open(embedding_file, 'r', encoding='utf-8') as f:
@@ -126,4 +126,27 @@ def load_embedding(embedding_file, dim, vocab_size, index2word):
     print('word exists embedding:', count_exist, '\tword not exists:', count_not_exist)
     embedding = np.array(embedding)
     return embedding
+
+
+class BatchWrapper(object):
+    """
+    wrap the simple torchtext iter with multiple y label
+    """
+    def __init__(self, dl, x_var, y_vars):
+        self.dl, self.x_var, self.y_vars = dl, x_var, y_vars
+
+    def __iter__(self):
+        for batch in self.dl:
+            x = getattr(batch, self.x_var) # we assume only one input in this wrapper
+            if self.y_vars is  not None:
+                temp = [getattr(batch, feat).unsqueeze(1) for feat in self.y_vars]
+                y = torch.cat(temp, dim=1).float()
+            else:
+                y = torch.zeros((1))
+            yield (x, y)
+
+    def __len__(self):
+        return len(self.dl)
+
+
 
