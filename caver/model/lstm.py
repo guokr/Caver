@@ -31,7 +31,7 @@ class LSTM(BaseModule):
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, self.layer_num,
-                            # batch_first=True,
+                            batch_first=True,
                             bidirectional=True)
         self.predictor = nn.Linear(hidden_dim*2, label_num)
         # self.sigmoid = nn.Sigmoid()

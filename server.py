@@ -11,6 +11,8 @@ import os
 parser = argparse.ArgumentParser(description="Caver Serving")
 parser.add_argument("--output_data_dir", type=str, help="data dir")
 parser.add_argument("--device", type=str, default="cpu")
+parser.add_argument("--checkpoint_dir", type=str, default="checkpoints")
+parser.add_argument("--model_file", type=str, default="checkpoint_best.pt")
 
 args = parser.parse_args()
 
@@ -20,11 +22,13 @@ TEXT = pickle.load(open(os.path.join(args.output_data_dir, "TEXT.p"), "rb"))
 model = LSTM(hidden_dim=300, embedding_dim=256, vocab_size=len(TEXT.vocab), label_num=400, device="cuda", layer_num=1)
 model.to(args.device)
 
-model.load_state_dict(torch.load("./checkpoints/checkpoint_9.pt"))
+model.load_state_dict(torch.load(os.path.join(args.checkpoint_dir,
+                                              args.model_file)))
 model.eval()
 
 import numpy as np
 import arrow
+
 def predict_sentiment(sentence):
     start = arrow.now()
     tokenized = sentence.split()
@@ -40,5 +44,6 @@ def predict_sentiment(sentence):
     end = arrow.now()
     print("sentence: {} ==> predicted labels: {} used {:.4f}seconds".format(sentence, ",".join(labels), (end-start).total_seconds()))
 
-sentence = "经济 房产 理财"
-predict_sentiment(sentence)
+sentences = ["经济 理财", "数学 高等数学", "篮球 篮球场"]
+for sent in sentences:
+    predict_sentiment(sent)
