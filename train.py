@@ -26,6 +26,8 @@ parser.add_argument("--batch_size", type=int, default=64,
 parser.add_argument("--output_data_dir", type=str, default="processed_data")
 parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
                     help="dir for checkpoints saving")
+parser.add_argument("--model_meta", type=str, default="model.pkl",
+                    help="filename to store the model class instance")
 parser.add_argument("--master_device", type=int, default=0)
 parser.add_argument("--multi_gpu", action="store_true")
 
@@ -122,8 +124,11 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
 
     model = LSTM(hidden_dim=300, embedding_dim=256,
                  vocab_size=len(TEXT.vocab),
-                 label_num=400,
-                 device="cuda", layer_num=1)
+                 label_num=len(y_feature),
+                 device=device, layer_num=1)
+    model_args = model.get_args()
+
+    # pickle.dump(model, open(os.path.join(args.checkpoint_dir, args.model_meta), "wb"))
 
     if torch.cuda.device_count() > 1 and args.multi_gpu is True:
         print("Training on {} GPUs".format(torch.cuda.device_count()))
@@ -140,7 +145,7 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
 
     for epoch in range(1, args.epoch+1):
         train_step(model, train_dataloader, optimizer, criterion, epoch)
-        valid_step(model, valid_dataloader, criterion, valid_loss_history, epoch)
+        valid_step(model, model_args, valid_dataloader, criterion, valid_loss_history, epoch)
 
 
 def train_step(model, train_data, opt, criterion, epoch):
@@ -165,7 +170,7 @@ def train_step(model, train_data, opt, criterion, epoch):
     # calculate the validation loss for this epoch
 
 
-def valid_step(model, valid_data, criterion, valid_loss_history, epoch):
+def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epoch):
     running_loss = 0.0
     num_sample = 0
     model.eval()
@@ -181,9 +186,10 @@ def valid_step(model, valid_data, criterion, valid_loss_history, epoch):
         tqdm_progress.set_postfix({"Ave Loss ":"{:.4f}".format(running_loss / num_sample)})
 
     if len(valid_loss_history) == 0 or loss.item() < valid_loss_history[0]:
-        torch.save(model.state_dict(),
+        torch.save({"model_args": model_args, "model_state_dict": model.state_dict()},
                    os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
-        torch.save(model.state_dict(),
+
+        torch.save({"model_args": model_args, "model_state_dict": model.state_dict()},
                    os.path.join(args.checkpoint_dir, "checkpoint_best.pt"))
         valid_loss_history.append(loss.item())
         valid_loss_history.sort()

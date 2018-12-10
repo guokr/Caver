@@ -21,15 +21,19 @@ args = parser.parse_args()
 y_feature = pickle.load(open(os.path.join(args.output_data_dir, "y_feature.p"), "rb"))
 TEXT = pickle.load(open(os.path.join(args.output_data_dir, "TEXT.p"), "rb"))
 
-model = LSTM(hidden_dim=300, embedding_dim=256, vocab_size=len(TEXT.vocab), label_num=400, device="cuda", layer_num=1)
+loaded_checkpoint = torch.load(os.path.join(args.checkpoint_dir, args.model_file))
+
+model = LSTM()
+model.update_args(loaded_checkpoint["model_args"])
 
 model.to(args.device)
 
-model.load_state_dict(torch.load(os.path.join(args.checkpoint_dir,
-                                              args.model_file)))
+model.load_state_dict(loaded_checkpoint["model_state_dict"])
+
 model.eval()
 
 import numpy as np
+
 import arrow
 
 def single_predict(sentence):

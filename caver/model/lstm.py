@@ -20,7 +20,8 @@ class LSTM(BaseModule):
     text -> embedding -> lstm -> mlp -> sigmoid
 
     """
-    def __init__(self, hidden_dim, embedding_dim, vocab_size, label_num, device, layer_num=1, ):
+    def __init__(self, hidden_dim=100, embedding_dim=100, vocab_size=1000,
+                 label_num=100, device="cpu", layer_num=1):
         super().__init__()
         # self.config = update_config(ConfigLSTM(), **kwargs)
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -28,13 +29,25 @@ class LSTM(BaseModule):
         self.bidirectional = True
         self.device = device
         self.hidden_dim = hidden_dim
-
-        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.vocab_size = vocab_size
+        self.embedding_dim = embedding_dim
+        self.label_num = label_num
+        self.embedding = nn.Embedding(self.vocab_size, self.embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, self.layer_num,
                             batch_first=True,
                             bidirectional=True)
         self.predictor = nn.Linear(hidden_dim*2, label_num)
         # self.sigmoid = nn.Sigmoid()
+
+
+    def get_args(self):
+        return vars(self)
+
+
+    def update_args(self, args):
+        for arg, value in args.items():
+            vars(self)[arg] = value
+
 
     def init_hidden(self, batch_size):
         return (
