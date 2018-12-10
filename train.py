@@ -21,6 +21,8 @@ parser.add_argument("--input_data_dir", type=str, help="data dir")
 parser.add_argument("--train_filename", type=str, default="train.tsv")
 parser.add_argument("--valid_filename", type=str, default="valid.tsv")
 parser.add_argument("--epoch", type=int, help="number of epoches", default=10)
+parser.add_argument("--batch_size", type=int, default=64,
+                    help="batch size for each GPU card")
 parser.add_argument("--output_data_dir", type=str, default="processed_data")
 parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
                     help="dir for checkpoints saving")
@@ -62,6 +64,7 @@ def check_args():
 
 
 def preprocess():
+    print("| Processing tokens and datasets...")
     tokenize = lambda x: x.split()
     TEXT = Field(sequential=True, tokenize=tokenize, lower=True, batch_first=True)
     LABEL = Field(sequential=False, use_vocab=False)
@@ -83,10 +86,6 @@ def preprocess():
     for col in y_feature:
         tv_datafields.append((col, LABEL))
 
-#    tst_datafields = [("tokens", TEXT)]
-#    # print(tv_datafields)
-#    # print(y_feature)
-
     train_data, valid_data = TabularDataset.splits(path=args.input_data_dir,
                                                    format="tsv",
                                                    train=args.train_filename,
@@ -99,23 +98,32 @@ def preprocess():
     pickle.dump(TEXT, open(os.path.join(args.output_data_dir, "TEXT.p"), "wb"))
     pickle.dump(y_feature, open(os.path.join(args.output_data_dir, "y_feature.p"), "wb"))
 
+    ############# pre-process done
+
+    return train_data, valid_data, TEXT, x_feature, y_feature
+
+def train(train_data, valid_data, TEXT, x_feature, y_feature):
+
+    print("| Building batches...")
+
     device = torch.device("cuda:{}".format(args.master_device))
 
+    # build dataloader
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
-                                batch_size=128,
+                                batch_size=args.batch_size * torch.cuda.device_count(),
                                 device=device,
                                 sort_key=lambda x: len(x.tokens),
                                 sort_within_batch=True)
-    print(arrow.now())
 
     train_dataloader = BatchWrapper(train_iter, x_feature, y_feature)
     valid_dataloader = BatchWrapper(valid_iter, x_feature, y_feature)
 
-    return train_dataloader, valid_dataloader, TEXT, device
+    print("| Building model...")
 
-
-def train(train_data, valid_data, TEXT, device):
-    model = LSTM(hidden_dim=300, embedding_dim=256, vocab_size=len(TEXT.vocab), label_num=400, device="cuda", layer_num=1)
+    model = LSTM(hidden_dim=300, embedding_dim=256,
+                 vocab_size=len(TEXT.vocab),
+                 label_num=400,
+                 device="cuda", layer_num=1)
 
     if torch.cuda.device_count() > 1 and args.multi_gpu is True:
         print("Training on {} GPUs".format(torch.cuda.device_count()))
@@ -128,9 +136,11 @@ def train(train_data, valid_data, TEXT, device):
     criterion = nn.BCEWithLogitsLoss()
     valid_loss_history = []
 
+    print("| Training...")
+
     for epoch in range(1, args.epoch+1):
-        train_step(model, train_data, optimizer, criterion, epoch)
-        valid_step(model, valid_data, criterion, valid_loss_history, epoch)
+        train_step(model, train_dataloader, optimizer, criterion, epoch)
+        valid_step(model, valid_dataloader, criterion, valid_loss_history, epoch)
 
 
 def train_step(model, train_data, opt, criterion, epoch):
@@ -182,5 +192,5 @@ def valid_step(model, valid_data, criterion, valid_loss_history, epoch):
 if __name__ == "__main__":
     status = check_args()
     if status == True:
-        tr, vl, TEXT, device = preprocess()
-        train(tr, vl, TEXT, device)
+        tr, vl, TEXT, x_feature, y_feature = preprocess()
+        train(tr, vl, TEXT, x_feature, y_feature)
