@@ -25,7 +25,7 @@ parser.add_argument("--output_data_dir", type=str, default="processed_data")
 parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
                     help="dir for checkpoints saving")
 parser.add_argument("--master_device", type=int, default=0)
-parser.add_argument("--multi_gpu", action="store_false")
+parser.add_argument("--multi_gpu", action="store_true")
 
 args = parser.parse_args()
 
@@ -99,7 +99,7 @@ def preprocess():
     pickle.dump(TEXT, open(os.path.join(args.output_data_dir, "TEXT.p"), "wb"))
     pickle.dump(y_feature, open(os.path.join(args.output_data_dir, "y_feature.p"), "wb"))
 
-    device = torch.device("cuda:{}".format(args.device_id))
+    device = torch.device("cuda:{}".format(args.master_device))
 
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
                                 batch_size=64,
