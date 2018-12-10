@@ -54,6 +54,7 @@ class LSTM(BaseModule):
         # hidden = self.init_hidden(batch_size)
         embedded = self.embedding(sequence)
 
+        self.lstm.flatten_parameters()
         output, (hidden, cell) = self.lstm(embedded)
         # output_feature = output[-1,:,:]
         output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)

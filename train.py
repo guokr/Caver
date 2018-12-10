@@ -102,7 +102,7 @@ def preprocess():
     device = torch.device("cuda:{}".format(args.master_device))
 
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
-                                batch_size=64,
+                                batch_size=128,
                                 device=device,
                                 sort_key=lambda x: len(x.tokens),
                                 sort_within_batch=True)
