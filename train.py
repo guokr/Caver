@@ -10,11 +10,11 @@ import torch.optim as optim
 import dill as pickle
 
 from torchtext.data import Field, TabularDataset, BucketIterator
-from caver.model import LSTM, FastText
+from caver.model import LSTM, FastText, CNN
 from caver.utils import MiniBatchWrapper
 
 parser = argparse.ArgumentParser(description="Caver training")
-parser.add_argument("--model", type=str, choices=["fastText", "LSTM"],
+parser.add_argument("--model", type=str, choices=["fastText", "LSTM", "CNN"],
                     help="choose the model", default="LSTM")
 parser.add_argument("--input_data_dir", type=str, help="data dir")
 parser.add_argument("--train_filename", type=str, default="train.tsv")
@@ -25,8 +25,6 @@ parser.add_argument("--batch_size", type=int, default=64,
 parser.add_argument("--output_data_dir", type=str, default="processed_data")
 parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
                     help="dir for checkpoints saving")
-parser.add_argument("--model_meta", type=str, default="model.pkl",
-                    help="filename to store the model class instance")
 parser.add_argument("--master_device", type=int, default=0)
 parser.add_argument("--multi_gpu", action="store_true")
 
@@ -128,11 +126,19 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
                      label_num=len(y_feature),
                      device=device,
                      layer_num=2)
-    elif args.model == "Fasttext":
+    elif args.model == "fastText":
         model = FastText(vocab_size=len(TEXT.vocab),
                          embedding_dim=256,
                          label_num=len(y_feature))
 
+    elif args.model == "CNN":
+        model = CNN(vocab_size=len(TEXT.vocab),
+                    embedding_dim=256,
+                    filter_num=100,
+                    filter_sizes=[3,4,5],
+                    label_num=len(y_feature))
+
+    print(model.get_args())
     model_args = model.get_args()
 
 
@@ -178,6 +184,7 @@ def train_step(model, train_data, opt, criterion, epoch):
 
 def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epoch):
     running_loss = 0.0
+    valid_loss = 0.0
     num_sample = 0
     model.eval()
     tqdm_progress = tqdm.tqdm(valid_data, desc="| Validating epoch {}/{}".format(epoch, args.epoch))
@@ -188,20 +195,22 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
         num_sample += x.size(0)
         running_loss += loss.item()*x.size(0)
 
-        # ave_loss = running_loss / len(valid_data)
+        valid_loss = loss.item()
+
         tqdm_progress.set_postfix({"Ave Loss ":"{:.4f}".format(running_loss / num_sample)})
 
-    if len(valid_loss_history) == 0 or loss.item() < valid_loss_history[0]:
-        torch.save({"model_type": args.model,
-                    "model_args": model_args,
-                    "model_state_dict": model.state_dict()},
-                   os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
+    torch.save({"model_type": args.model,
+                "model_args": model_args,
+                "model_state_dict": model.state_dict()},
+               os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
 
+    if len(valid_loss_history) == 0 or valid_loss < valid_loss_history[0]:
+        print("| Better checkpoint found !")
         torch.save({"model_type": args.model,
                     "model_args": model_args,
                     "model_state_dict": model.state_dict()},
                    os.path.join(args.checkpoint_dir, "checkpoint_best.pt"))
-        valid_loss_history.append(loss.item())
+        valid_loss_history.append(valid_loss)
         valid_loss_history.sort()
 
 

@@ -1,9 +1,10 @@
 import torch
-from torch import nn
-
+import torch.nn as nn
+import torch.nn.functional as F
 from .base import BaseModule
-from ..config import ConfigCNN
-from ..utils import update_config
+
+# from ..config import ConfigCNN
+# from ..utils import update_config
 
 class CNN(BaseModule):
     """
@@ -18,40 +19,46 @@ class CNN(BaseModule):
     .. _cnn_paper: https://arxiv.org/pdf/1408.5882.pdf
 
     text -> embedding -> conv -> relu -> BatchNorm -> max_pool -> mlp -> sigmoid
-    """ 
-    def __init__(self, **kwargs):
+    """
+    def __init__(self, vocab_size=1000, embedding_dim=100, filter_num=100, filter_sizes=[3,4,5], label_num=100, dropout=0.3):
         super().__init__()
-        self.config = update_config(ConfigCNN(), **kwargs)
+        # self.config = update_config(ConfigCNN(), **kwargs)
+        self._vocab_size = vocab_size
+        self._embedding_dim = embedding_dim
+        self._filter_sizes = filter_sizes
+        self._dropout = dropout
+        self._filter_num = filter_num
+        self._label_num = label_num
 
-        self.embedding = nn.Embedding(
-            self.config.vocab_size, self.config.embedding_dim, self.config.sentence_length
-        )
+        # need or not
+        self._hidden_dim = len(self._filter_sizes) * self._filter_num
 
-        self.relu = nn.ReLU(inplace=True)
-        self.conv = nn.ModuleList([
-            self.conv_relu_bn_pool(
-                self.config.embedding_dim, self.config.filter_num, size, self.config.sentence_length
-            ) for size in self.config.filter_size
-        ])
-        self.hidden_dim = len(self.config.filter_size) * self.config.filter_num
-        self.bn = nn.BatchNorm1d(self.hidden_dim)
-        self.dropout = nn.Dropout(self.config.drop)
-        self.mlp = nn.Linear(self.hidden_dim, self.config.label_num)
-        self.sigmoid = nn.Sigmoid()
+        self.embedding = nn.Embedding(self._vocab_size,
+                                      self._embedding_dim)
+        self.convs = nn.ModuleList([nn.Conv2d(in_channels=1,
+                                              out_channels=self._filter_num,
+                                              kernel_size=(filter_size, self._embedding_dim)
+                                              )
+                                    for filter_size in self._filter_sizes])
 
-    def conv_relu_bn_pool(self, in_channel, out_channel, kernel_size, dim):
-        return nn.Sequential(
-            nn.Conv1d(in_channel, out_channel, kernel_size),
-            self.relu,
-            nn.BatchNorm1d(out_channel),
-            nn.MaxPool1d(dim - kernel_size + 1),
-        )
+        self.dropout = nn.Dropout(self._dropout)
 
-    def forward(self, input_data):
-        embedded = self.embedding(input_data).transpose(1, 2)
-        hidden = torch.cat([
-            conv(embedded) for conv in self.conv
-        ], 2)
-        hidden = self.bn(hidden.view(-1, self.hidden_dim))
-        hidden = self.mlp(self.dropout(hidden))
-        return self.sigmoid(hidden)
+        #?? hidden or not should be test
+        self.bn = nn.BatchNorm1d(self._hidden_dim)
+        self.predictor = nn.Linear(self._hidden_dim,
+                                   self._label_num)
+
+    def forward(self, sequence):
+        embedded = self.embedding(sequence)
+        #embedded = [batch size, sent len, emb dim]
+        embedded = embedded.unsqueeze(1)
+        #embedded = [batch size, 1, sent len, emb dim]
+        conved = [F.relu(conv(embedded)).squeeze(3) for conv in self.convs]
+        #conv_n = [batch size, n_filters, sent len - filter_sizes[n]]
+        pooled = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in conved]
+        #pooled_n = [batch size, n_filters]
+
+        cat = self.dropout(torch.cat(pooled, dim=1))
+        # cat = self.dropout(self.bn(torch.cat(pooled, dim=1)))
+        #cat = [batch size, n_filters * len(filter_sizes)]
+        return self.predictor(cat)
