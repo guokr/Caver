@@ -25,3 +25,12 @@ class BaseModule(torch.nn.Module):
 
         torch.save(self.state_dict(), path)
         print('[+] Model saved.')
+
+    def get_args(self):
+        return vars(self)
+
+
+    def update_args(self, args):
+        for arg, value in args.items():
+            vars(self)[arg] = value
+

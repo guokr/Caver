@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from .base import BaseModule
+
+class FastText(BaseModule):
+    """
+    Original FastText re-implementaion
+    """
+    def __init__(self, vocab_size=1000, embedding_dim=100, label_num=100):
+        super().__init__()
+        self._vocab_size = vocab_size
+        self._embedding_dim = embedding_dim
+        self._label_num = label_num
+
+        self.embedding = nn.Embedding(self._vocab_size, self._embedding_dim)
+        self.predictor = nn.Linear(self._embedding_dim, self._label_num)
+
+    def forward(self, sentence):
+        #### sentence = [batch_size, sent len]
+        embedded = self.embedding(sentence)
+        pooled = F.avg_pool2d(embedded, (embedded.shape[1], 1)).squeeze(1)
+        preds = self.predictor(pooled)
+
+        return preds

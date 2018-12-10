@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import torch
-from torch import nn
+import torch.nn as nn
 
 from .base import BaseModule
 from ..config import ConfigLSTM
@@ -15,7 +18,7 @@ class LSTM(BaseModule):
     :param bidirectional: use bidirectional lstm layer?
     :type bidirectional: bool
 
-    Simpole LSTM model
+    Simple LSTM model
 
     text -> embedding -> lstm -> mlp -> sigmoid
 
@@ -48,15 +51,6 @@ class LSTM(BaseModule):
                             dropout=self._dropout)
         self.predictor = nn.Linear(self._hidden_dim*2 if self._bidirectional else self._hidden_dim*1,
                                    self._label_num)
-
-
-    def get_args(self):
-        return vars(self)
-
-
-    def update_args(self, args):
-        for arg, value in args.items():
-            vars(self)[arg] = value
 
 
     def init_hidden(self, batch_size):

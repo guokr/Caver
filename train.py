@@ -10,11 +10,11 @@ import torch.optim as optim
 import dill as pickle
 
 from torchtext.data import Field, TabularDataset, BucketIterator
-from caver.model import LSTM
+from caver.model import LSTM, FastText
 from caver.utils import MiniBatchWrapper
 
 parser = argparse.ArgumentParser(description="Caver training")
-parser.add_argument("--model", type=str, choices=["CNN", "LSTM"],
+parser.add_argument("--model", type=str, choices=["Fasttext", "LSTM"],
                     help="choose the model", default="LSTM")
 parser.add_argument("--input_data_dir", type=str, help="data dir")
 parser.add_argument("--train_filename", type=str, default="train.tsv")
@@ -121,10 +121,18 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
 
     print("| Building model...")
 
-    model = LSTM(hidden_dim=300, embedding_dim=256,
-                 vocab_size=len(TEXT.vocab),
-                 label_num=len(y_feature),
-                 device=device, layer_num=2)
+    if args.model == "LSTM":
+        model = LSTM(hidden_dim=300,
+                     embedding_dim=256,
+                     vocab_size=len(TEXT.vocab),
+                     label_num=len(y_feature),
+                     device=device,
+                     layer_num=2)
+    elif args.model == "Fasttext":
+        model = FastText(vocab_size=len(TEXT.vocab),
+                         embedding_dim=256,
+                         label_num=len(y_feature))
+
     model_args = model.get_args()
 
 
