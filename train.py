@@ -57,7 +57,10 @@ def check_args():
         print("Doesn't find the save dir, we will create a default one for you")
         os.mkdir(args.checkpoint_dir)
 
-    print(args)
+    print("========= Command Line Tools Args =========")
+    for arg, value in vars(args).items():
+        print("{:>20} <===> {:<20}".format(arg, value))
+    print("===========================================")
 
     return status
 
@@ -130,7 +133,6 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
         model = FastText(vocab_size=len(TEXT.vocab),
                          embedding_dim=256,
                          label_num=len(y_feature))
-
     elif args.model == "CNN":
         model = CNN(vocab_size=len(TEXT.vocab),
                     embedding_dim=256,
@@ -138,9 +140,7 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
                     filter_sizes=[3,4,5],
                     label_num=len(y_feature))
 
-    print(model.get_args())
     model_args = model.get_args()
-
 
     if torch.cuda.device_count() > 1 and args.multi_gpu is True:
         print("Training on {} GPUs".format(torch.cuda.device_count()))

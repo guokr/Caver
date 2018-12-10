@@ -7,7 +7,7 @@ from caver.model import LSTM, FastText
 import dill as pickle
 import argparse
 import os
-
+import sys
 parser = argparse.ArgumentParser(description="Caver Serving")
 parser.add_argument("--output_data_dir", type=str, help="data dir")
 parser.add_argument("--device", type=str, default="cpu")
@@ -24,10 +24,15 @@ TEXT = pickle.load(open(os.path.join(args.output_data_dir, "TEXT.p"), "rb"))
 loaded_checkpoint = torch.load(os.path.join(args.checkpoint_dir, args.model_file))
 
 model_type = loaded_checkpoint["model_type"]
+
 if model_type == "LSTM":
     model = LSTM()
 elif model_type == "fastText":
     model = FastText()
+elif model_type == "CNN":
+    model = FastText()
+else:
+    sys.exit()
 
 model.update_args(loaded_checkpoint["model_args"])
 model.to(args.device)
