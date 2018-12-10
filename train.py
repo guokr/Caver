@@ -14,7 +14,7 @@ from caver.model import LSTM, FastText
 from caver.utils import MiniBatchWrapper
 
 parser = argparse.ArgumentParser(description="Caver training")
-parser.add_argument("--model", type=str, choices=["Fasttext", "LSTM"],
+parser.add_argument("--model", type=str, choices=["fastText", "LSTM"],
                     help="choose the model", default="LSTM")
 parser.add_argument("--input_data_dir", type=str, help="data dir")
 parser.add_argument("--train_filename", type=str, default="train.tsv")
@@ -192,10 +192,14 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
         tqdm_progress.set_postfix({"Ave Loss ":"{:.4f}".format(running_loss / num_sample)})
 
     if len(valid_loss_history) == 0 or loss.item() < valid_loss_history[0]:
-        torch.save({"model_args": model_args, "model_state_dict": model.state_dict()},
+        torch.save({"model_type": args.model,
+                    "model_args": model_args,
+                    "model_state_dict": model.state_dict()},
                    os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
 
-        torch.save({"model_args": model_args, "model_state_dict": model.state_dict()},
+        torch.save({"model_type": args.model,
+                    "model_args": model_args,
+                    "model_state_dict": model.state_dict()},
                    os.path.join(args.checkpoint_dir, "checkpoint_best.pt"))
         valid_loss_history.append(loss.item())
         valid_loss_history.sort()
