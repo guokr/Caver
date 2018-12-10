@@ -11,8 +11,7 @@ import dill as pickle
 
 from torchtext.data import Field, TabularDataset, BucketIterator
 from caver.model import LSTM
-from caver.utils import BatchWrapper
-import arrow
+from caver.utils import MiniBatchWrapper
 
 parser = argparse.ArgumentParser(description="Caver training")
 parser.add_argument("--model", type=str, choices=["CNN", "LSTM"],
@@ -117,18 +116,17 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
                                 sort_key=lambda x: len(x.tokens),
                                 sort_within_batch=True)
 
-    train_dataloader = BatchWrapper(train_iter, x_feature, y_feature)
-    valid_dataloader = BatchWrapper(valid_iter, x_feature, y_feature)
+    train_dataloader = MiniBatchWrapper(train_iter, x_feature, y_feature)
+    valid_dataloader = MiniBatchWrapper(valid_iter, x_feature, y_feature)
 
     print("| Building model...")
 
     model = LSTM(hidden_dim=300, embedding_dim=256,
                  vocab_size=len(TEXT.vocab),
                  label_num=len(y_feature),
-                 device=device, layer_num=1)
+                 device=device, layer_num=2)
     model_args = model.get_args()
 
-    # pickle.dump(model, open(os.path.join(args.checkpoint_dir, args.model_meta), "wb"))
 
     if torch.cuda.device_count() > 1 and args.multi_gpu is True:
         print("Training on {} GPUs".format(torch.cuda.device_count()))

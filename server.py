@@ -25,15 +25,11 @@ loaded_checkpoint = torch.load(os.path.join(args.checkpoint_dir, args.model_file
 
 model = LSTM()
 model.update_args(loaded_checkpoint["model_args"])
-
 model.to(args.device)
-
 model.load_state_dict(loaded_checkpoint["model_state_dict"])
-
 model.eval()
 
 import numpy as np
-
 import arrow
 
 def single_predict(sentence):

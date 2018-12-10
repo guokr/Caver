@@ -21,23 +21,33 @@ class LSTM(BaseModule):
 
     """
     def __init__(self, hidden_dim=100, embedding_dim=100, vocab_size=1000,
-                 label_num=100, device="cpu", layer_num=1):
+                 label_num=100, device="cpu", layer_num=2, dropout=0.3,
+                 batch_first=True, bidirectional=True):
         super().__init__()
         # self.config = update_config(ConfigLSTM(), **kwargs)
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.layer_num = layer_num
-        self.bidirectional = True
-        self.device = device
-        self.hidden_dim = hidden_dim
-        self.vocab_size = vocab_size
-        self.embedding_dim = embedding_dim
-        self.label_num = label_num
-        self.embedding = nn.Embedding(self.vocab_size, self.embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim, self.layer_num,
-                            batch_first=True,
-                            bidirectional=True)
-        self.predictor = nn.Linear(hidden_dim*2, label_num)
-        # self.sigmoid = nn.Sigmoid()
+
+        ## starts with _ stands for static attr, otherwise nn layers
+        self._layer_num = layer_num
+        self._bidirectional = bidirectional
+        self._device = device
+        self._hidden_dim = hidden_dim
+        self._vocab_size = vocab_size
+        self._embedding_dim = embedding_dim
+        self._label_num = label_num
+        self._dropout = dropout
+        self._batch_first = batch_first
+
+        self.embedding = nn.Embedding(self._vocab_size, self._embedding_dim)
+        self.dropout = nn.Dropout(self._dropout)
+        self.lstm = nn.LSTM(self._embedding_dim,
+                            self._hidden_dim,
+                            self._layer_num,
+                            batch_first=self._batch_first,
+                            bidirectional=self._bidirectional,
+                            dropout=self._dropout)
+        self.predictor = nn.Linear(self._hidden_dim*2 if self._bidirectional else self._hidden_dim*1,
+                                   self._label_num)
 
 
     def get_args(self):
@@ -63,15 +73,23 @@ class LSTM(BaseModule):
         )
 
     def forward(self, sequence):
+        #### sentence = [batch_size , sent len]
+
         # batch_size = sequence.size(0)
         # hidden = self.init_hidden(batch_size)
         embedded = self.embedding(sequence)
+        #### embedded = [batch_size , sent len , embedding dim]
+        embedded = self.dropout(embedded)
 
         self.lstm.flatten_parameters()
         output, (hidden, cell) = self.lstm(embedded)
-        # output_feature = output[-1,:,:]
+        #### output = [batch_size, sent len, hidden_dim x num_directions]
+        #### hidden = [batch size, num layers x num directions, hiddim dim]
+        #### cell = [batch size, num layers x num directions, hiddim dim]
+
         output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
-        preds = self.predictor(output_feature)
+        output_feature = self.dropout(output_feature)
+        #### output_feature = [batch_size, hidden_dim x num_directions]
+
+        preds = self.predictor(output_feature.squeeze(0))
         return preds
-        # label = self.mlp(hidden[0].view(batch_size, -1))
-        # return self.sigmoid(label)

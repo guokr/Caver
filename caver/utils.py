@@ -128,7 +128,7 @@ def load_embedding(embedding_file, dim, vocab_size, index2word):
     return embedding
 
 
-class BatchWrapper(object):
+class MiniBatchWrapper(object):
     """
     wrap the simple torchtext iter with multiple y label
     """
