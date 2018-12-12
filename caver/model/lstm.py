@@ -68,11 +68,20 @@ class LSTM(BaseModule):
         )
 
     def attention(self, rnn_out, state):
+        state = state.unsqueeze(0)
+
+        # print(state.shape)
         merged_state = torch.cat([s for s in state], 1)
-        merged_state = merged_state.squeeze(0).unsqueeze(2)
-        #### [batch_size, sent len, cell size] x [batch_size, cell_size, 1]
+        # merged_state = merged_state.squeeze(0).unsqueeze(2)
+        merged_state = merged_state.unsqueeze(2)
+        #### [batch_size, sent len, hidden dim x num_directions ] x [batch_size, hidden dim x num_directions, 1]
         weights = torch.bmm(rnn_out, merged_state)
+        #### bmm res = [batdh_size, sent len, 1]
         weights = F.softmax(weights.squeeze(2)).unsqueeze(2)
+        #### weights = [batch_size, sent len, 1]
+        #### transpose res = [batch_size, hidden_dim x num directions, sent len]
+        #### bmm res = [batch_size, hidden_dim x num directions, 1]
+        #### final res = [batch_size, hidden_dim x num_directions]
         return torch.bmm(torch.transpose(rnn_out, 1, 2), weights).squeeze(2)
 
     def forward(self, sequence):
@@ -91,6 +100,12 @@ class LSTM(BaseModule):
         #### cell = [num layers x num directions, batch size,  hiddim dim]
 
         output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
+
+
+        # print(hidden.shape)
+        # hidden2 = hidden.squeeze(0)
+        # print(hidden2.shape)
+        # print(hidden == hidden2)
         # print(output_feature.shape)
         # print(torch.sum(output_feature))
         # print(output.shape)
@@ -99,11 +114,8 @@ class LSTM(BaseModule):
 
         # print(output[:,-1,:].shape)
         # output_a = output.permute(1,0,2)[-1,:,:]
-        # print(torch.sum(output_a))
-        # print(output_feature)
-        # print(output_a)
-        # orr = torch.isclose(output_feature, output.permute(1,0,2)[-1,:,:])
-        # print(orr)
+        output_feature = self.attention(output, output_feature)
+
 
 
         output_feature = self.dropout(output_feature)
