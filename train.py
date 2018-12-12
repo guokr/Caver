@@ -20,7 +20,7 @@ parser.add_argument("--input_data_dir", type=str, help="data dir")
 parser.add_argument("--train_filename", type=str, default="train.tsv")
 parser.add_argument("--valid_filename", type=str, default="valid.tsv")
 parser.add_argument("--epoch", type=int, help="number of epoches", default=10)
-parser.add_argument("--batch_size", type=int, default=64,
+parser.add_argument("--batch_size", type=int, default=16,
                     help="batch size for each GPU card")
 parser.add_argument("--output_data_dir", type=str, default="processed_data")
 parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",

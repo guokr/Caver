@@ -21,9 +21,12 @@ class FastText(BaseModule):
         self.predictor = nn.Linear(self._embedding_dim, self._label_num)
 
     def forward(self, sentence):
-        #### sentence = [batch_size, sent len]
+#        #### sentence = [batch_size, sent length]
         embedded = self.embedding(sentence)
+#        #### embedded = [batch size, sent length, embedding dim]
         pooled = F.avg_pool2d(embedded, (embedded.shape[1], 1)).squeeze(1)
+#        #### before squeeze: [batch_size, 1, embedding_dim]
+#        #### after squeeze: [batch_size, embedding_dim]
         preds = self.predictor(pooled)
 
         return preds

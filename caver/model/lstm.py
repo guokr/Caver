@@ -3,6 +3,7 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from .base import BaseModule
 from ..config import ConfigLSTM
@@ -66,6 +67,14 @@ class LSTM(BaseModule):
             ).to(self.device)
         )
 
+    def attention(self, rnn_out, state):
+        merged_state = torch.cat([s for s in state], 1)
+        merged_state = merged_state.squeeze(0).unsqueeze(2)
+        #### [batch_size, sent len, cell size] x [batch_size, cell_size, 1]
+        weights = torch.bmm(rnn_out, merged_state)
+        weights = F.softmax(weights.squeeze(2)).unsqueeze(2)
+        return torch.bmm(torch.transpose(rnn_out, 1, 2), weights).squeeze(2)
+
     def forward(self, sequence):
         #### sentence = [batch_size , sent len]
 
@@ -78,12 +87,27 @@ class LSTM(BaseModule):
         self.lstm.flatten_parameters()
         output, (hidden, cell) = self.lstm(embedded)
         #### output = [batch_size, sent len, hidden_dim x num_directions]
-        #### hidden = [batch size, num layers x num directions, hiddim dim]
-        #### cell = [batch size, num layers x num directions, hiddim dim]
+        #### hidden = [num layers x num directions, batch size, hiddim dim]
+        #### cell = [num layers x num directions, batch size,  hiddim dim]
 
         output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
+        # print(output_feature.shape)
+        # print(torch.sum(output_feature))
+        # print(output.shape)
+
+        # output_feature = output[:,-1,:]
+
+        # print(output[:,-1,:].shape)
+        # output_a = output.permute(1,0,2)[-1,:,:]
+        # print(torch.sum(output_a))
+        # print(output_feature)
+        # print(output_a)
+        # orr = torch.isclose(output_feature, output.permute(1,0,2)[-1,:,:])
+        # print(orr)
+
+
         output_feature = self.dropout(output_feature)
-        #### output_feature = [batch_size, hidden_dim x num_directions]
+        #### output_feature = [batch_size, hidden_dim x num_directions]#
 
         preds = self.predictor(output_feature.squeeze(0))
         return preds
