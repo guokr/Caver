@@ -149,7 +149,7 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
     else:
         model.to(device)
 
-    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = optim.Adam(model.parameters(), lr=1e-4)
     criterion = nn.BCEWithLogitsLoss()
     valid_loss_history = []
 
