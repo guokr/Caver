@@ -85,6 +85,7 @@ class LSTM(BaseModule):
         return torch.bmm(torch.transpose(rnn_out, 1, 2), weights).squeeze(2)
 
     def forward(self, sequence):
+        print(sequence.shape)
         #### sentence = [batch_size , sent len]
 
         # batch_size = sequence.size(0)

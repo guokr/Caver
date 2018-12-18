@@ -3,7 +3,7 @@
 
 import torch
 
-from caver.model import LSTM, FastText
+from caver.model import LSTM, FastText, CNN
 import dill as pickle
 import argparse
 import os
@@ -21,21 +21,23 @@ args = parser.parse_args()
 y_feature = pickle.load(open(os.path.join(args.output_data_dir, "y_feature.p"), "rb"))
 TEXT = pickle.load(open(os.path.join(args.output_data_dir, "TEXT.p"), "rb"))
 
-loaded_checkpoint = torch.load(os.path.join(args.checkpoint_dir, args.model_file))
+device = torch.device(args.device)
+loaded_checkpoint = torch.load(os.path.join(args.checkpoint_dir, args.model_file), map_location=device)
 
 model_type = loaded_checkpoint["model_type"]
+
 
 if model_type == "LSTM":
     model = LSTM()
 elif model_type == "fastText":
     model = FastText()
 elif model_type == "CNN":
-    model = FastText()
+    model = CNN()
 else:
     sys.exit()
 
 model.update_args(loaded_checkpoint["model_args"])
-model.to(args.device)
+# model.to(args.device)
 model.load_state_dict(loaded_checkpoint["model_state_dict"])
 model.eval()
 
@@ -47,7 +49,8 @@ def single_predict(sentence):
     tokenized = sentence.split()
     indexed = [TEXT.vocab.stoi[t] for t in tokenized]
     indexed = torch.LongTensor(indexed).to(args.device)
-    indexed = indexed.unsqueeze(1)
+    indexed = indexed.unsqueeze(0)
+    print(indexed)
     preds = model(indexed)
     preds = preds.data.cpu().numpy()
     preds = 1 / (1 + np.exp(-preds))
@@ -57,9 +60,31 @@ def single_predict(sentence):
     end = arrow.now()
     print("sentence: {} ==> predicted labels: {} used {:.4f}seconds".format(sentence, ",".join(labels), (end-start).total_seconds()))
 
-sentences = ["经济 理财",
-             "数学 高等数学",
-             "篮球 篮球场"]
+def single_predict_cnn(sentence):
+    start = arrow.now()
+    tokenized = sentence.split()
+    if len(tokenized) < 4:
+        tokenized += ["<pad>"] * (4 - len(tokenized))
+    indexed = [TEXT.vocab.stoi[t] for t in tokenized]
+    indexed = torch.LongTensor(indexed).to(args.device)
+    indexed = indexed.unsqueeze(0)
+    preds = model(indexed)
+    preds = preds.data.cpu().numpy()
+    preds = 1 / (1 + np.exp(-preds))
+    preds = preds[0]
+    index = np.argsort(preds)[::-1][:args.number_labels]
+    labels = [y_feature[idx] for idx in index]
+    end = arrow.now()
+    print("sentence: {} ==> predicted labels: {} used {:.4f}seconds".format(sentence, ",".join(labels), (end-start).total_seconds()))
 
-for sent in sentences:
-    single_predict(sent)
+
+sentences_char = ["经 济 理 财",
+                  "数 学 高 等 数 学",
+                  "篮 球 篮 球 场"]
+
+sentences_char = ["经济 理财",
+                  "数学 高等数学",
+                  "篮球 篮球场"]
+
+for sent in sentences_char:
+    single_predict_cnn(sent)

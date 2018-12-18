@@ -20,7 +20,9 @@ class CNN(BaseModule):
 
     text -> embedding -> conv -> relu -> BatchNorm -> max_pool -> mlp -> sigmoid
     """
-    def __init__(self, vocab_size=1000, embedding_dim=100, filter_num=100, filter_sizes=[3,4,5], label_num=100, dropout=0.3):
+    def __init__(self, vocab_size=1000, embedding_dim=100,
+                 filter_num=100, filter_sizes=[2,3,4],
+                 label_num=100, dropout=0.3):
         super().__init__()
         # self.config = update_config(ConfigCNN(), **kwargs)
         self._vocab_size = vocab_size
@@ -48,7 +50,11 @@ class CNN(BaseModule):
         self.predictor = nn.Linear(self._hidden_dim,
                                    self._label_num)
 
+
+
     def forward(self, sequence):
+        # print(sequence.shape)
+
         embedded = self.embedding(sequence)
         #embedded = [batch size, sent len, emb dim]
         embedded = embedded.unsqueeze(1)

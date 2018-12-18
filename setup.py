@@ -1,33 +1,35 @@
-import setuptools
+from setuptools import setup, find_packages
+import sys
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+if sys.version_info<(3,):
+    sys.exit("Sorry, Python 3 is required for Caver")
 
-setuptools.setup(
+with open("README.md", "r") as f:
+    readme = f.read()
+
+with open("requirements.txt", "r") as f:
+    reqs = [l for l in f.read().splitlines() if l]
+
+setup(
     name="caver",
-    version="0.0.1",
-    author="Keming Yang",
-    author_email="kemingy94@gmail.com",
-    description="A toolkit for multiclass text classification",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
+    version="0.0.4",
+    description="Multi-label Text Classification Toolkit",
+    long_description=readme,
+    author='Guokr Inc.',
+    author_email='jinyang.zhou@guokr.com',
     url="https://github.com/guokr/Caver",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
+        'Topic :: Text Processing',
+        'Topic :: Text Processing :: Indexing',
+        'Topic :: Text Processing :: Linguistic',
     ),
     entry_points={
         'console_scripts': [
             # 'trickster_train=trickster::train',
         ]
     },
-    install_requires=[
-        'numpy',
-        'scipy',
-        'plane',
-        'scikit-learn',
-        'jieba',
-        'torch',
-    ]
+    install_requires=reqs
 )

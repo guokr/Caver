@@ -31,42 +31,45 @@ parser.add_argument("--multi_gpu", action="store_true")
 args = parser.parse_args()
 
 def check_args():
+
+    print("=============== Command Line Tools Args ===============")
+    for arg, value in vars(args).items():
+        print("{:>20} <===> {:<20}".format(arg, value))
+    print("=======================================================")
+
     status = True
     if not os.path.exists(os.path.join(args.input_data_dir, args.train_filename)):
         status = False
-        print("train file doesn't exist")
+        print("|ERROR| train file doesn't exist")
 
     if not os.path.exists(os.path.join(args.input_data_dir, args.valid_filename)):
         status = False
-        print("valid file doesn't exist")
+        print("|ERROR| valid file doesn't exist")
 
     if torch.cuda.is_available() == False:
         status = False
-        print("Currently we dont support CPU training")
+        print("|ERROR| Currently we dont support CPU training")
 
     if torch.cuda.device_count() == 1 and args.multi_gpu == True:
         status = False
-        print("We only detected {} GPU".format(torch.cuda.device_count()))
+        print("|ERROR| We only detected {} GPU".format(torch.cuda.device_count()))
 
     if os.path.isdir(args.checkpoint_dir) and len(os.listdir(args.checkpoint_dir)) != 0:
         status = False
         # exist but not empty
-        print("save dir must be empty")
+        print("|ERROR| save dir must be empty")
+
 
     if not os.path.isdir(args.checkpoint_dir):
-        print("Doesn't find the save dir, we will create a default one for you")
+        print("|NOTE| Doesn't find the save dir, we will create a default one for you")
         os.mkdir(args.checkpoint_dir)
 
-    print("========= Command Line Tools Args =========")
-    for arg, value in vars(args).items():
-        print("{:>20} <===> {:<20}".format(arg, value))
-    print("===========================================")
 
     return status
 
 
 def preprocess():
-    print("| Processing tokens and datasets...")
+    print("|LOGGING| Processing tokens and datasets...")
     tokenize = lambda x: x.split()
     TEXT = Field(sequential=True, tokenize=tokenize, lower=True, batch_first=True)
     LABEL = Field(sequential=False, use_vocab=False)
@@ -137,7 +140,7 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
         model = CNN(vocab_size=len(TEXT.vocab),
                     embedding_dim=256,
                     filter_num=100,
-                    filter_sizes=[3,4,5],
+                    filter_sizes=[2,3,4],
                     label_num=len(y_feature))
 
     model_args = model.get_args()
@@ -189,6 +192,10 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
     model.eval()
     tqdm_progress = tqdm.tqdm(valid_data, desc="| Validating epoch {}/{}".format(epoch, args.epoch))
     for x, y in tqdm_progress:
+        if x.size(1)<4:
+            print("ok minibatch skiped")
+            continue
+
         preds = model(x)
         loss = criterion(preds, y)
 
