@@ -231,6 +231,7 @@
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rnn_out</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sequence</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="c1">#### sentence = [batch_size , sent len]</span>
 
         <span class="c1"># batch_size = sequence.size(0)</span>
