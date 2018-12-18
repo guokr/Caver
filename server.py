@@ -44,13 +44,12 @@ model.eval()
 import numpy as np
 import arrow
 
-def single_predict(sentence):
+def single_predict_lstm(sentence):
     start = arrow.now()
     tokenized = sentence.split()
     indexed = [TEXT.vocab.stoi[t] for t in tokenized]
     indexed = torch.LongTensor(indexed).to(args.device)
-    indexed = indexed.unsqueeze(0)
-    print(indexed)
+    indexed = indexed.unsqueeze(0) # set batch_size to 1
     preds = model(indexed)
     preds = preds.data.cpu().numpy()
     preds = 1 / (1 + np.exp(-preds))
@@ -67,7 +66,7 @@ def single_predict_cnn(sentence):
         tokenized += ["<pad>"] * (4 - len(tokenized))
     indexed = [TEXT.vocab.stoi[t] for t in tokenized]
     indexed = torch.LongTensor(indexed).to(args.device)
-    indexed = indexed.unsqueeze(0)
+    indexed = indexed.unsqueeze(0) # set batch_size to 1
     preds = model(indexed)
     preds = preds.data.cpu().numpy()
     preds = 1 / (1 + np.exp(-preds))
