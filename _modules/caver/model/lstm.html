@@ -231,7 +231,6 @@
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rnn_out</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">sequence</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="c1">#### sentence = [batch_size , sent len]</span>
 
         <span class="c1"># batch_size = sequence.size(0)</span>
@@ -247,8 +246,6 @@
         <span class="c1">#### cell = [num layers x num directions, batch size,  hiddim dim]</span>
 
         <span class="n">output_feature</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">hidden</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">hidden</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-
         <span class="c1"># print(hidden.shape)</span>
         <span class="c1"># hidden2 = hidden.squeeze(0)</span>
         <span class="c1"># print(hidden2.shape)</span>
@@ -261,14 +258,14 @@
 
         <span class="c1"># print(output[:,-1,:].shape)</span>
         <span class="c1"># output_a = output.permute(1,0,2)[-1,:,:]</span>
-        <span class="n">output_feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">output_feature</span><span class="p">)</span>
-
-
+        <span class="c1"># output_feature = self.attention(output, output_feature)</span>
 
         <span class="n">output_feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">output_feature</span><span class="p">)</span>
         <span class="c1">#### output_feature = [batch_size, hidden_dim x num_directions]#</span>
+        <span class="c1"># print(&quot;output shape&quot;, output.shape)</span>
 
-        <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">output_feature</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">output_feature</span><span class="p">)</span>
+        <span class="c1"># print(&quot;lstm final output&quot;, preds.shape)</span>
         <span class="k">return</span> <span class="n">preds</span></div>
 </pre></div>
 
