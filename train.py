@@ -59,11 +59,13 @@ def check_args():
         # exist but not empty
         print("|ERROR| save dir must be empty")
 
-
     if not os.path.isdir(args.checkpoint_dir):
         print("|NOTE| Doesn't find the save dir, we will create a default one for you")
         os.mkdir(args.checkpoint_dir)
 
+    if not os.path.isdir(args.output_data_dir):
+        print("|NOTE| Doesn't find the output data dir, we will create a default one for you")
+        os.mkdir(args.output_data_dir)
 
     return status
 
@@ -73,9 +75,7 @@ def preprocess():
     tokenize = lambda x: x.split()
     TEXT = Field(sequential=True, tokenize=tokenize, lower=True, batch_first=True)
     LABEL = Field(sequential=False, use_vocab=False)
-
     from itertools import islice
-
     columns = []
 
     with open(os.path.join(args.input_data_dir, args.train_filename)) as f_input:
@@ -102,17 +102,15 @@ def preprocess():
 
     pickle.dump(TEXT, open(os.path.join(args.output_data_dir, "TEXT.p"), "wb"))
     pickle.dump(y_feature, open(os.path.join(args.output_data_dir, "y_feature.p"), "wb"))
+    print("FEATURE: ", len(y_feature))
 
     ############# pre-process done
 
     return train_data, valid_data, TEXT, x_feature, y_feature
 
 def train(train_data, valid_data, TEXT, x_feature, y_feature):
-
     print("| Building batches...")
-
     device = torch.device("cuda:{}".format(args.master_device))
-
     # build dataloader
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
                                 batch_size=args.batch_size * torch.cuda.device_count(),
@@ -162,31 +160,37 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
         train_step(model, train_dataloader, optimizer, criterion, epoch)
         valid_step(model, model_args, valid_dataloader, criterion, valid_loss_history, epoch)
 
+from evaluate import eval_recall
 
 def train_step(model, train_data, opt, criterion, epoch):
     running_loss = 0.0
+    running_recall = 0.0
     num_sample = 0
     model.train()
     tqdm_progress = tqdm.tqdm(train_data, desc="| Training epoch {}/{}".format(epoch, args.epoch))
     for x, y in tqdm_progress:
         opt.zero_grad()
-        # print(x.shape)
-        # print(y.shape)
         preds = model(x)
+        recall = eval_recall(preds, y)
+
         loss = criterion(preds, y)
         loss.backward()
         opt.step()
 
         num_sample += x.size(0)
         running_loss += loss.item()*x.size(0)
+        running_recall += recall * x.size(0)
         # ave_loss = running_loss / len(train_data)
 
-        tqdm_progress.set_postfix({"Ave Loss ":"{:.4f}".format(running_loss / num_sample)})
+        tqdm_progress.set_postfix({"Ave Loss":"{:.4f}".format(running_loss / num_sample),
+                                   "Recall": "{:.4f}".format(running_recall / num_sample)})
+        # tqdm_progress.set_postfix({"Recall":"{:.4f}".format(recall)})
     # calculate the validation loss for this epoch
 
 
 def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epoch):
     running_loss = 0.0
+    running_recall = 0.0
     valid_loss = 0.0
     num_sample = 0
     model.eval()
@@ -198,13 +202,16 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
 
         preds = model(x)
         loss = criterion(preds, y)
+        recall = eval_recall(preds, y)
 
         num_sample += x.size(0)
         running_loss += loss.item()*x.size(0)
+        running_recall += recall * x.size(0)
 
         valid_loss = loss.item()
 
-        tqdm_progress.set_postfix({"Ave Loss ":"{:.4f}".format(running_loss / num_sample)})
+        tqdm_progress.set_postfix({"Ave Loss":"{:.4f}".format(running_loss / num_sample),
+                                   "Recall": "{:.4f}".format(running_recall / num_sample)})
 
     torch.save({"model_type": args.model,
                 "model_args": model_args,

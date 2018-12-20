@@ -85,7 +85,6 @@ class LSTM(BaseModule):
         return torch.bmm(torch.transpose(rnn_out, 1, 2), weights).squeeze(2)
 
     def forward(self, sequence):
-        print(sequence.shape)
         #### sentence = [batch_size , sent len]
 
         # batch_size = sequence.size(0)
@@ -101,8 +100,6 @@ class LSTM(BaseModule):
         #### cell = [num layers x num directions, batch size,  hiddim dim]
 
         output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
-
-
         # print(hidden.shape)
         # hidden2 = hidden.squeeze(0)
         # print(hidden2.shape)
@@ -115,12 +112,12 @@ class LSTM(BaseModule):
 
         # print(output[:,-1,:].shape)
         # output_a = output.permute(1,0,2)[-1,:,:]
-        output_feature = self.attention(output, output_feature)
-
-
+        # output_feature = self.attention(output, output_feature)
 
         output_feature = self.dropout(output_feature)
         #### output_feature = [batch_size, hidden_dim x num_directions]#
+        # print("output shape", output.shape)
 
-        preds = self.predictor(output_feature.squeeze(0))
+        preds = self.predictor(output_feature)
+        # print("lstm final output", preds.shape)
         return preds

@@ -37,8 +37,10 @@ else:
     sys.exit()
 
 model.update_args(loaded_checkpoint["model_args"])
-# model.to(args.device)
+model.to(args.device)
 model.load_state_dict(loaded_checkpoint["model_state_dict"])
+
+print(model.get_args())
 model.eval()
 
 import numpy as np
@@ -49,8 +51,10 @@ def single_predict_lstm(sentence):
     tokenized = sentence.split()
     indexed = [TEXT.vocab.stoi[t] for t in tokenized]
     indexed = torch.LongTensor(indexed).to(args.device)
-    indexed = indexed.unsqueeze(0) # set batch_size to 1
+    indexed = indexed.unsqueeze(0) # set batch_size to 1?????????
+
     preds = model(indexed)
+
     preds = preds.data.cpu().numpy()
     preds = 1 / (1 + np.exp(-preds))
     preds = preds[0]
@@ -68,6 +72,11 @@ def single_predict_cnn(sentence):
     indexed = torch.LongTensor(indexed).to(args.device)
     indexed = indexed.unsqueeze(0) # set batch_size to 1
     preds = model(indexed)
+
+#    preds = torch.sigmoid(preds)
+#    preds = preds.data.cpu().numpy()
+#    preds = preds[0]
+
     preds = preds.data.cpu().numpy()
     preds = 1 / (1 + np.exp(-preds))
     preds = preds[0]
@@ -81,9 +90,9 @@ sentences_char = ["经 济 理 财",
                   "数 学 高 等 数 学",
                   "篮 球 篮 球 场"]
 
-sentences_char = ["经济 理财",
+sentences_word = ["经济",
                   "数学 高等数学",
                   "篮球 篮球场"]
 
 for sent in sentences_char:
-    single_predict_cnn(sent)
+    single_predict_lstm(sent)

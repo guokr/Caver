@@ -12,7 +12,7 @@ with open("requirements.txt", "r") as f:
 
 setup(
     name="caver",
-    version="0.0.4",
+    version="0.0.5",
     description="Multi-label Text Classification Toolkit",
     long_description=readme,
     author='Guokr Inc.',

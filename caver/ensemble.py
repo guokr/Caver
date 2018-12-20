@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import stats
 
-from .classify import Caver
+# from .classify import Caver
 
 
 class Ensemble:
@@ -13,10 +13,6 @@ class Ensemble:
     def __init__(self, models):
         assert isinstance(models, list) and len(models) > 0
         label_num = models[0].config.label_num
-        for m in models:
-            assert isinstance(m, Caver)
-            if label_num != m.config.label_num:
-                raise ValueError('All the model must have the same numbers of labels.')
 
         self.models = models
         self.epsilon = 1e-8
