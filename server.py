@@ -43,7 +43,7 @@ model.eval()
 
 def predict(sentences):
     labels = []
-    preds = model.predict_text(sentences, TEXT.vocab.stoi, top_k=5)
+    preds = model.predict(sentences, TEXT.vocab.stoi, top_k=5)
     preds = preds.data.cpu().numpy()
     for pred in preds:
         labels.append([y_feature[idx] for idx in pred])

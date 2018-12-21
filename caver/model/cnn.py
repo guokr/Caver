@@ -69,7 +69,18 @@ class CNN(BaseModule):
         return self.predictor(cat)
 
 
-    def predict_text(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
+    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
+        batch_preds = self._predict_text(batch_sequence_text=batch_sequence_text,
+                                         vocab_dict=vocab_dict,
+                                         device=device,
+                                         top_k=top_k)
+
+        batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(batch_preds), k=top_k, dim=1)
+
+        return batch_top_k_index
+
+
+    def _predict_text(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
         """
         do prediction for tokenized text in batch way
 
@@ -104,5 +115,4 @@ class CNN(BaseModule):
         indexed = torch.LongTensor(batch_indexed).to(device)
         # print(indexed)
         batch_preds = self.forward(indexed)
-        batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(batch_preds), k=top_k, dim=1)
-        return batch_top_k_index
+        return batch_preds

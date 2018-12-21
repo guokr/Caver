@@ -1,5 +1,7 @@
 import numpy as np
 from scipy import stats
+import torch
+import torch.nn.functional as F
 
 # from .classify import Caver
 
@@ -24,6 +26,13 @@ class Ensemble(object):
             'gmean': self.gmean,
         }
 
+
+    def __str__(self):
+        start = "====== ensemble summary =======\n"
+        summary = "\n-------------\n".join([model.__str__() for model in self.models])
+        return start+summary
+
+
     def avg(self, preds):
         return np.average(preds, axis=0)
 
@@ -36,13 +45,21 @@ class Ensemble(object):
     def gmean(self, preds):
         return stats.gmean(self.epsilon + preds)
 
-    def predict(self, sequence, method='log'):
+    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5, method='log'):
+
         """
         :param str text: text
         :param str method: ['log', 'avg', 'hmean', 'gmean']
         """
         assert method in self.methods
-        preds = np.array([model(sequence) for model in self.models])
+        rrr = [model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models]
+        for rr in rrr:
+            print(rr.shape)
+            print(rr)
+            print(F.softmax(rr, dim=1))
+
+        preds = np.array([model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models])
+        # print(preds.shape)
         return self.methods.get(method)(preds)
 
     def get_top_label(self, text, method='log', top=5):
