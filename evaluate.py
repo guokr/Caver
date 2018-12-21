@@ -2,10 +2,8 @@
 # encoding: utf-8
 
 import jieba
-
 import csv
 from tqdm import tqdm
-
 import torch
 import numpy as np
 

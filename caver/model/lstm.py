@@ -4,10 +4,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from .base import BaseModule
-from ..config import ConfigLSTM
-from ..utils import update_config
 
 
 class LSTM(BaseModule):
@@ -102,10 +99,6 @@ class LSTM(BaseModule):
         output_feature = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
         # print(hidden.shape)
         # hidden2 = hidden.squeeze(0)
-        # print(hidden2.shape)
-        # print(hidden == hidden2)
-        # print(output_feature.shape)
-        # print(torch.sum(output_feature))
         # print(output.shape)
 
         # output_feature = output[:,-1,:]
@@ -121,3 +114,28 @@ class LSTM(BaseModule):
         preds = self.predictor(output_feature)
         # print("lstm final output", preds.shape)
         return preds
+
+    def predict_text(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
+        """
+        do prediction for for tokenized text in batch way
+
+        LSTM in normal way
+
+        vocab_dict: {"word": 1, "<pad>": 0}
+        """
+        batch_tokenized = [seq.split() for seq in batch_sequence_text]
+
+        batch_longest = max(map(len, batch_tokenized))
+        batch_padding_threshold = batch_longest
+        # print(batch_longest)
+        for sample in batch_tokenized:
+            if len(sample) < batch_padding_threshold:
+                sample  += ["<pad>"] * (batch_padding_threshold - len(sample))
+
+        batch_indexed =[[vocab_dict[sample_token] for sample_token in sample] for sample in batch_tokenized]
+
+        indexed = torch.LongTensor(batch_indexed).to(device)
+        batch_preds = self.forward(indexed)
+        batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(batch_preds), k=top_k, dim=1)
+        return batch_top_k_index
+

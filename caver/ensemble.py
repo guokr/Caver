@@ -4,7 +4,7 @@ from scipy import stats
 # from .classify import Caver
 
 
-class Ensemble:
+class Ensemble(object):
     """
     :param list models: each model should have the same label number
 
@@ -12,7 +12,7 @@ class Ensemble:
     """
     def __init__(self, models):
         assert isinstance(models, list) and len(models) > 0
-        label_num = models[0].config.label_num
+        # label_num = models[0].config.label_num
 
         self.models = models
         self.epsilon = 1e-8
@@ -36,14 +36,13 @@ class Ensemble:
     def gmean(self, preds):
         return stats.gmean(self.epsilon + preds)
 
-    def predict(self, text, method='log'):
+    def predict(self, sequence, method='log'):
         """
         :param str text: text
         :param str method: ['log', 'avg', 'hmean', 'gmean']
         """
         assert method in self.methods
-
-        preds = np.array([m.predict(text) for m in self.models])
+        preds = np.array([model(sequence) for model in self.models])
         return self.methods.get(method)(preds)
 
     def get_top_label(self, text, method='log', top=5):

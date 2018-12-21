@@ -1,10 +1,11 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .base import BaseModule
 
-# from ..config import ConfigCNN
-# from ..utils import update_config
 
 class CNN(BaseModule):
     """
@@ -51,10 +52,8 @@ class CNN(BaseModule):
                                    self._label_num)
 
 
-
     def forward(self, sequence):
         # print(sequence.shape)
-
         embedded = self.embedding(sequence)
         #embedded = [batch size, sent len, emb dim]
         embedded = embedded.unsqueeze(1)
@@ -68,3 +67,42 @@ class CNN(BaseModule):
         # cat = self.dropout(self.bn(torch.cat(pooled, dim=1)))
         #cat = [batch size, n_filters * len(filter_sizes)]
         return self.predictor(cat)
+
+
+    def predict_text(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
+        """
+        do prediction for tokenized text in batch way
+
+        CNN is special in processing <pad>
+
+        vocab_dict: {"word": 1, "<pad>": 0}
+        """
+#            # print(type(vocab_dict))
+#            # sequence_text: "我 喜欢 吃 苹果"
+#            tokenized = sequence_text.split()
+#            # at least the CNN's filter sizes' longest one
+#            if len(tokenized) < max(self._filter_sizes):
+#                tokenized += ["<pad>"] * (max(self._filter_sizes) - len(tokenized))
+#            indexed = [vocab_dict[t] for t in tokenized]
+#            indexed = torch.LongTensor(indexed).to(device)
+#            indexed = indexed.unsqueeze(0) # set batch_size to 1
+#            preds = self.forward(indexed)
+#            return preds
+
+        batch_tokenized = [seq.split() for seq in batch_sequence_text]
+        # print(batch_tokenized)
+        batch_longest = max(map(len, batch_tokenized))
+        batch_padding_threshold = max(max(self._filter_sizes), batch_longest)
+        # print(batch_longest)
+        for sample in batch_tokenized:
+            if len(sample) < batch_padding_threshold:
+                sample  += ["<pad>"] * (batch_padding_threshold - len(sample))
+
+        # print(batch_tokenized)
+        batch_indexed =[[vocab_dict[sample_token] for sample_token in sample] for sample in batch_tokenized]
+        # print(batch_indexed)
+        indexed = torch.LongTensor(batch_indexed).to(device)
+        # print(indexed)
+        batch_preds = self.forward(indexed)
+        batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(batch_preds), k=top_k, dim=1)
+        return batch_top_k_index
