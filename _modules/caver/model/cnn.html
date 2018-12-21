@@ -144,13 +144,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for caver.model.cnn</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># encoding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseModule</span>
 
-<span class="c1"># from ..config import ConfigCNN</span>
-<span class="c1"># from ..utils import update_config</span>
 
 <div class="viewcode-block" id="CNN"><a class="viewcode-back" href="../../../model.html#caver.model.cnn.CNN">[docs]</a><span class="k">class</span> <span class="nc">CNN</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -197,10 +198,8 @@
                                    <span class="bp">self</span><span class="o">.</span><span class="n">_label_num</span><span class="p">)</span>
 
 
-
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
         <span class="c1"># print(sequence.shape)</span>
-
         <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
         <span class="c1">#embedded = [batch size, sent len, emb dim]</span>
         <span class="n">embedded</span> <span class="o">=</span> <span class="n">embedded</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -213,7 +212,46 @@
         <span class="n">cat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">pooled</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
         <span class="c1"># cat = self.dropout(self.bn(torch.cat(pooled, dim=1)))</span>
         <span class="c1">#cat = [batch size, n_filters * len(filter_sizes)]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">predict_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        do prediction for tokenized text in batch way</span>
+
+<span class="sd">        CNN is special in processing &lt;pad&gt;</span>
+
+<span class="sd">        vocab_dict: {&quot;word&quot;: 1, &quot;&lt;pad&gt;&quot;: 0}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<span class="c1">#            # print(type(vocab_dict))</span>
+<span class="c1">#            # sequence_text: &quot;我 喜欢 吃 苹果&quot;</span>
+<span class="c1">#            tokenized = sequence_text.split()</span>
+<span class="c1">#            # at least the CNN&#39;s filter sizes&#39; longest one</span>
+<span class="c1">#            if len(tokenized) &lt; max(self._filter_sizes):</span>
+<span class="c1">#                tokenized += [&quot;&lt;pad&gt;&quot;] * (max(self._filter_sizes) - len(tokenized))</span>
+<span class="c1">#            indexed = [vocab_dict[t] for t in tokenized]</span>
+<span class="c1">#            indexed = torch.LongTensor(indexed).to(device)</span>
+<span class="c1">#            indexed = indexed.unsqueeze(0) # set batch_size to 1</span>
+<span class="c1">#            preds = self.forward(indexed)</span>
+<span class="c1">#            return preds</span>
+
+        <span class="n">batch_tokenized</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">batch_sequence_text</span><span class="p">]</span>
+        <span class="c1"># print(batch_tokenized)</span>
+        <span class="n">batch_longest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">batch_tokenized</span><span class="p">))</span>
+        <span class="n">batch_padding_threshold</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_sizes</span><span class="p">),</span> <span class="n">batch_longest</span><span class="p">)</span>
+        <span class="c1"># print(batch_longest)</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">batch_tokenized</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">batch_padding_threshold</span><span class="p">:</span>
+                <span class="n">sample</span>  <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">batch_padding_threshold</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">))</span>
+
+        <span class="c1"># print(batch_tokenized)</span>
+        <span class="n">batch_indexed</span> <span class="o">=</span><span class="p">[[</span><span class="n">vocab_dict</span><span class="p">[</span><span class="n">sample_token</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample_token</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">batch_tokenized</span><span class="p">]</span>
+        <span class="c1"># print(batch_indexed)</span>
+        <span class="n">indexed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">batch_indexed</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># print(indexed)</span>
+        <span class="n">batch_preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">indexed</span><span class="p">)</span>
+        <span class="n">batch_top_k_value</span><span class="p">,</span> <span class="n">batch_top_k_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">batch_preds</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">batch_top_k_index</span></div>
 </pre></div>
 
            </div>

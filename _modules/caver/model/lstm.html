@@ -150,10 +150,7 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseModule</span>
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">ConfigLSTM</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">update_config</span>
 
 
 <div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../model.html#caver.model.lstm.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
@@ -248,10 +245,6 @@
         <span class="n">output_feature</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">hidden</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">hidden</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># print(hidden.shape)</span>
         <span class="c1"># hidden2 = hidden.squeeze(0)</span>
-        <span class="c1"># print(hidden2.shape)</span>
-        <span class="c1"># print(hidden == hidden2)</span>
-        <span class="c1"># print(output_feature.shape)</span>
-        <span class="c1"># print(torch.sum(output_feature))</span>
         <span class="c1"># print(output.shape)</span>
 
         <span class="c1"># output_feature = output[:,-1,:]</span>
@@ -266,7 +259,32 @@
 
         <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">output_feature</span><span class="p">)</span>
         <span class="c1"># print(&quot;lstm final output&quot;, preds.shape)</span>
-        <span class="k">return</span> <span class="n">preds</span></div>
+        <span class="k">return</span> <span class="n">preds</span>
+
+    <span class="k">def</span> <span class="nf">predict_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        do prediction for for tokenized text in batch way</span>
+
+<span class="sd">        LSTM in normal way</span>
+
+<span class="sd">        vocab_dict: {&quot;word&quot;: 1, &quot;&lt;pad&gt;&quot;: 0}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_tokenized</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">batch_sequence_text</span><span class="p">]</span>
+
+        <span class="n">batch_longest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">batch_tokenized</span><span class="p">))</span>
+        <span class="n">batch_padding_threshold</span> <span class="o">=</span> <span class="n">batch_longest</span>
+        <span class="c1"># print(batch_longest)</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">batch_tokenized</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">batch_padding_threshold</span><span class="p">:</span>
+                <span class="n">sample</span>  <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">batch_padding_threshold</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">))</span>
+
+        <span class="n">batch_indexed</span> <span class="o">=</span><span class="p">[[</span><span class="n">vocab_dict</span><span class="p">[</span><span class="n">sample_token</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample_token</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">batch_tokenized</span><span class="p">]</span>
+
+        <span class="n">indexed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">batch_indexed</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">batch_preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">indexed</span><span class="p">)</span>
+        <span class="n">batch_top_k_value</span><span class="p">,</span> <span class="n">batch_top_k_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">batch_preds</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">batch_top_k_index</span></div>
+
 </pre></div>
 
            </div>
