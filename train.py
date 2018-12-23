@@ -160,30 +160,37 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
         train_step(model, train_dataloader, optimizer, criterion, epoch)
         valid_step(model, model_args, valid_dataloader, criterion, valid_loss_history, epoch)
 
-from evaluate import eval_recall
+from evaluate import evaluation
 
 def train_step(model, train_data, opt, criterion, epoch):
     running_loss = 0.0
     running_recall = 0.0
+    running_precision = 0.0
+    running_f_score = 0.0
     num_sample = 0
     model.train()
     tqdm_progress = tqdm.tqdm(train_data, desc="| Training epoch {}/{}".format(epoch, args.epoch))
     for x, y in tqdm_progress:
         opt.zero_grad()
         preds = model(x)
-        recall = eval_recall(preds, y)
+        recall, precision, f_score = evaluation(preds, y)
 
         loss = criterion(preds, y)
         loss.backward()
         opt.step()
 
         num_sample += x.size(0)
-        running_loss += loss.item()*x.size(0)
+        running_loss += loss.item() * x.size(0)
         running_recall += recall * x.size(0)
+        running_precision += precision * x.size(0)
+        running_f_score += f_score * x.size(0)
         # ave_loss = running_loss / len(train_data)
 
-        tqdm_progress.set_postfix({"Ave Loss":"{:.4f}".format(running_loss / num_sample),
-                                   "Recall": "{:.4f}".format(running_recall / num_sample)})
+        tqdm_progress.set_postfix({"Loss":"{:.4f}".format(running_loss / num_sample),
+                                   "Recall": "{:.4f}".format(running_recall / num_sample),
+                                   "Precsion": "{:.4f}".format(running_precision / num_sample),
+                                   "F_Score": "{:.4f}".format(running_f_score / num_sample)
+                                   })
         # tqdm_progress.set_postfix({"Recall":"{:.4f}".format(recall)})
     # calculate the validation loss for this epoch
 
@@ -191,6 +198,8 @@ def train_step(model, train_data, opt, criterion, epoch):
 def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epoch):
     running_loss = 0.0
     running_recall = 0.0
+    running_precision = 0.0
+    running_f_score = 0.0
     valid_loss = 0.0
     num_sample = 0
     model.eval()
@@ -202,21 +211,24 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
 
         preds = model(x)
         loss = criterion(preds, y)
-        recall = eval_recall(preds, y)
 
+        recall, precision, f_score = evaluation(preds, y)
         num_sample += x.size(0)
         running_loss += loss.item()*x.size(0)
         running_recall += recall * x.size(0)
-
+        running_precision += precision * x.size(0)
+        running_f_score += f_score * x.size(0)
         valid_loss = loss.item()
-
-        tqdm_progress.set_postfix({"Ave Loss":"{:.4f}".format(running_loss / num_sample),
-                                   "Recall": "{:.4f}".format(running_recall / num_sample)})
-
+        tqdm_progress.set_postfix({"Loss":"{:.4f}".format(running_loss / num_sample),
+                                   "Recall": "{:.4f}".format(running_recall / num_sample),
+                                   "Precsion": "{:.4f}".format(running_precision / num_sample),
+                                   "F_Score": "{:.4f}".format(running_f_score / num_sample)
+                                   })
     torch.save({"model_type": args.model,
                 "model_args": model_args,
                 "model_state_dict": model.state_dict()},
                os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
+
 
     if len(valid_loss_history) == 0 or valid_loss < valid_loss_history[0]:
         print("| Better checkpoint found !")
