@@ -45,22 +45,37 @@ class Ensemble(object):
     def gmean(self, preds):
         return stats.gmean(self.epsilon + preds)
 
-    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5, method='log'):
+    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5, method='avg'):
 
         """
         :param str text: text
         :param str method: ['log', 'avg', 'hmean', 'gmean']
         """
         assert method in self.methods
-        rrr = [model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models]
-        for rr in rrr:
-            print(rr.shape)
-            print(rr)
-            print(F.softmax(rr, dim=1))
+        models_preds = [model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models]
 
-        preds = np.array([model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models])
+        ensemble_batch_preds = torch.zeros(models_preds[0].shape)
+
+        for preds in models_preds:
+            # print(F.softmax(preds, dim=1))
+            ensemble_batch_preds += F.softmax(preds, dim=1)
+            # _softmax = F.softmax(preds, dim=1)
+            # print(_softmax)
+
+        ensemble_batch_preds /= len(self.models)
+        # print(ensemble_res)
+
+        batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(ensemble_batch_preds), k=top_k, dim=1)
+
+        # return batch_top_k_index
+
+        return batch_top_k_index
+
+            # print(F.softmax(rr, dim=1))
+
+        # preds = np.array([model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models])
         # print(preds.shape)
-        return self.methods.get(method)(preds)
+        # return self.methods.get(method)(preds)
 
     def get_top_label(self, text, method='log', top=5):
         """

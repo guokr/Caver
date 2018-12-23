@@ -25,7 +25,6 @@ y_feature = pickle.load(open(os.path.join(output_data_dir, "y_feature.p"), "rb")
 TEXT = pickle.load(open(os.path.join(output_data_dir, "TEXT.p"), "rb"))
 device = torch.device("cpu")
 
-
 # loaded_checkpoint = torch.load(os.path.join(args.checkpoint_dir, args.model_file), map_location=device)
 # model_type = loaded_checkpoint["model_type"]
 
@@ -63,17 +62,17 @@ lstm_cnn_log = Ensemble([model_lstm, model_cnn])
 # print(lstm_cnn_log)
 
 def predict(sentences):
-#    labels = []
+    labels = []
     preds = lstm_cnn_log.predict(sentences, TEXT.vocab.stoi, top_k=5)
-#    preds = preds.data.cpu().numpy()
-#    for pred in preds:
-#        labels.append([y_feature[idx] for idx in pred])
-#    res = list(zip(sentences, labels))
-#
-#    for ele in res:
-#        print("sentence: {} ==> predicted labels: {}".format(ele[0], ",".join(ele[1])))
-#
-#
+    preds = preds.data.cpu().numpy()
+    for pred in preds:
+        labels.append([y_feature[idx] for idx in pred])
+    res = list(zip(sentences, labels))
+
+    for ele in res:
+        print("sentence: {} ==> predicted labels: {}".format(ele[0], ",".join(ele[1])))
+
+
 sentences_char = ["经 济",
                   "数 学 高 等 数 学",
                   "篮 球 篮 球 场"]
