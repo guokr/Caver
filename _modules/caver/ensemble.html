@@ -191,22 +191,37 @@
     <span class="k">def</span> <span class="nf">gmean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preds</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">+</span> <span class="n">preds</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Ensemble.predict"><a class="viewcode-back" href="../../classify.html#caver.Ensemble.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Ensemble.predict"><a class="viewcode-back" href="../../classify.html#caver.Ensemble.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;avg&#39;</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param str text: text</span>
 <span class="sd">        :param str method: [&#39;log&#39;, &#39;avg&#39;, &#39;hmean&#39;, &#39;gmean&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods</span>
-        <span class="n">rrr</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">_predict_text</span><span class="p">(</span><span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">rr</span> <span class="ow">in</span> <span class="n">rrr</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">rr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">models_preds</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">_predict_text</span><span class="p">(</span><span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">]</span>
 
-        <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">_predict_text</span><span class="p">(</span><span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">])</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">models_preds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">preds</span> <span class="ow">in</span> <span class="n">models_preds</span><span class="p">:</span>
+            <span class="c1"># print(F.softmax(preds, dim=1))</span>
+            <span class="n">ensemble_batch_preds</span> <span class="o">+=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># _softmax = F.softmax(preds, dim=1)</span>
+            <span class="c1"># print(_softmax)</span>
+
+        <span class="n">ensemble_batch_preds</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
+        <span class="c1"># print(ensemble_res)</span>
+
+        <span class="n">batch_top_k_value</span><span class="p">,</span> <span class="n">batch_top_k_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">ensemble_batch_preds</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># return batch_top_k_index</span>
+
+        <span class="k">return</span> <span class="n">batch_top_k_index</span></div>
+
+            <span class="c1"># print(F.softmax(rr, dim=1))</span>
+
+        <span class="c1"># preds = np.array([model._predict_text(batch_sequence_text, vocab_dict, device=&quot;cpu&quot;, top_k=5) for model in self.models])</span>
         <span class="c1"># print(preds.shape)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="p">)(</span><span class="n">preds</span><span class="p">)</span></div>
+        <span class="c1"># return self.methods.get(method)(preds)</span>
 
 <div class="viewcode-block" id="Ensemble.get_top_label"><a class="viewcode-back" href="../../classify.html#caver.Ensemble.get_top_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_top_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
