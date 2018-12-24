@@ -163,19 +163,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="p">{}</span>
 
 
-<div class="viewcode-block" id="BaseModule.load"><a class="viewcode-back" href="../../../model.html#caver.model.base.BaseModule.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseModule.load"><a class="viewcode-back" href="../../../model.html#caver.model.base.BaseModule.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; load model from file &quot;&quot;&quot;</span>
         <span class="c1"># assert os.path.isfile(path)</span>
         <span class="c1"># self.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))</span>
         <span class="n">loaded_checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;checkpoint_best.pt&quot;</span><span class="p">),</span>
-                                       <span class="n">map_location</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+                                       <span class="n">map_location</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">update_args</span><span class="p">(</span><span class="n">loaded_checkpoint</span><span class="p">[</span><span class="s2">&quot;model_args&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded_checkpoint</span><span class="p">[</span><span class="s2">&quot;model_state_dict&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;y_feature.p&quot;</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">TEXT</span><span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;TEXT.p&quot;</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span></div>
 
-<span class="c1"># y_feature = pickle.load(open(os.path.join(cnn_checkpoint_dir, &quot;y_feature.p&quot;), &quot;rb&quot;))</span>
 
 <div class="viewcode-block" id="BaseModule.save"><a class="viewcode-back" href="../../../model.html#caver.model.base.BaseModule.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; save model to file &quot;&quot;&quot;</span>
@@ -206,8 +206,6 @@
         <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">batch_top_k_index</span><span class="p">:</span>
             <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">labels</span></div></div>
-
-
 </pre></div>
 
            </div>
