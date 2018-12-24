@@ -145,18 +145,17 @@
             
   <h1>Source code for caver.ensemble</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
+<span class="c1"># from scipy import stats</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<span class="c1"># from .classify import Caver</span>
 
 
 <div class="viewcode-block" id="Ensemble"><a class="viewcode-back" href="../../classify.html#caver.Ensemble">[docs]</a><span class="k">class</span> <span class="nc">Ensemble</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :param list models: each model should have the same label number</span>
-
 <span class="sd">    For now, this only support soft voting methods.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">models</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -166,7 +165,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-8</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">methods</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;avg&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">avg</span><span class="p">,</span>
+            <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
             <span class="s1">&#39;log&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span>
             <span class="s1">&#39;hmean&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmean</span><span class="p">,</span>
             <span class="s1">&#39;gmean&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmean</span><span class="p">,</span>
@@ -179,43 +178,71 @@
         <span class="k">return</span> <span class="n">start</span><span class="o">+</span><span class="n">summary</span>
 
 
-    <span class="k">def</span> <span class="nf">avg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preds</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">models_preds</span><span class="p">):</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">models_preds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">preds</span> <span class="ow">in</span> <span class="n">models_preds</span><span class="p">:</span>
+            <span class="c1"># print(F.softmax(preds, dim=1))</span>
+            <span class="n">ensemble_batch_preds</span> <span class="o">+=</span> <span class="n">preds</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">ensemble_batch_preds</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
+        <span class="c1"># print(ensemble_res)</span>
+        <span class="k">return</span> <span class="n">ensemble_batch_preds</span>
+        <span class="c1"># return batch_top_k_index</span>
+
 
     <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preds</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">+</span> <span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">hmean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preds</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">hmean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">+</span> <span class="n">preds</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">gmean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preds</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">gmean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">+</span> <span class="n">preds</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">hmean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">models_preds</span><span class="p">):</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">models_preds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">preds</span> <span class="ow">in</span> <span class="n">models_preds</span><span class="p">:</span>
+            <span class="c1"># print(F.softmax(preds, dim=1))</span>
+            <span class="n">ensemble_batch_preds</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="n">preds</span>
 
-<div class="viewcode-block" id="Ensemble.predict"><a class="viewcode-back" href="../../classify.html#caver.Ensemble.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;avg&#39;</span><span class="p">):</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)</span> <span class="o">/</span> <span class="n">ensemble_batch_preds</span>
+        <span class="c1"># print(ensemble_res)</span>
+        <span class="k">return</span> <span class="n">ensemble_batch_preds</span>
 
+
+    <span class="k">def</span> <span class="nf">gmean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">models_preds</span><span class="p">):</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">models_preds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">preds</span> <span class="ow">in</span> <span class="n">models_preds</span><span class="p">:</span>
+            <span class="c1"># print(F.softmax(preds, dim=1))</span>
+            <span class="n">ensemble_batch_preds</span> <span class="o">*=</span> <span class="n">preds</span>
+
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">ensemble_batch_preds</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">))</span>
+        <span class="c1"># print(ensemble_res)</span>
+        <span class="k">return</span> <span class="n">ensemble_batch_preds</span>
+
+
+<div class="viewcode-block" id="Ensemble.predict"><a class="viewcode-back" href="../../classify.html#caver.Ensemble.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param str text: text</span>
-<span class="sd">        :param str method: [&#39;log&#39;, &#39;avg&#39;, &#39;hmean&#39;, &#39;gmean&#39;]</span>
+<span class="sd">        :param str method: [&#39;mean&#39;, &#39;hmean&#39;, &#39;gmean&#39;]</span>
+
+<span class="sd">        mean: arithmetic mean</span>
+<span class="sd">        hmean: harmonica mean</span>
+<span class="sd">        gmean: geometric mean</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods</span>
         <span class="n">models_preds</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">_predict_text</span><span class="p">(</span><span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">]</span>
+        <span class="n">models_preds_softmax</span> <span class="o">=</span> <span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">preds</span> <span class="ow">in</span> <span class="n">models_preds</span><span class="p">]</span>
 
-        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">models_preds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># print(&quot;original models preds&quot;)</span>
+        <span class="c1"># print(models_preds_softmax)</span>
 
-        <span class="k">for</span> <span class="n">preds</span> <span class="ow">in</span> <span class="n">models_preds</span><span class="p">:</span>
-            <span class="c1"># print(F.softmax(preds, dim=1))</span>
-            <span class="n">ensemble_batch_preds</span> <span class="o">+=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># _softmax = F.softmax(preds, dim=1)</span>
-            <span class="c1"># print(_softmax)</span>
+        <span class="n">ensemble_batch_preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="p">](</span><span class="n">models_preds_softmax</span><span class="p">)</span>
 
-        <span class="n">ensemble_batch_preds</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
-        <span class="c1"># print(ensemble_res)</span>
+        <span class="c1"># print(&quot;ensembled models preds&quot;)</span>
+        <span class="c1"># print(ensemble_batch_preds)</span>
 
         <span class="n">batch_top_k_value</span><span class="p">,</span> <span class="n">batch_top_k_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">ensemble_batch_preds</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># return batch_top_k_index</span>
 
         <span class="k">return</span> <span class="n">batch_top_k_index</span></div>
+
+
 
             <span class="c1"># print(F.softmax(rr, dim=1))</span>
 
