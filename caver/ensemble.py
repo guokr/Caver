@@ -1,8 +1,13 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import numpy as np
-# from scipy import stats
 import torch
 import torch.nn.functional as F
 
+
+class EnsembleException(Exception):
+    pass
 
 
 class Ensemble(object):
@@ -13,9 +18,11 @@ class Ensemble(object):
     """
     def __init__(self, models):
         assert isinstance(models, list) and len(models) > 0
-        # label_num = models[0].config.label_num
+        self.model_consistance_checker(models)
 
         self.models = models
+        self.labels = models[0].labels
+        self.vocab = models[0].vocab
         self.epsilon = 1e-8
 
         self.methods = {
@@ -30,6 +37,15 @@ class Ensemble(object):
         start = "====== ensemble summary =======\n"
         summary = "\n-------------\n".join([model.__str__() for model in self.models])
         return start+summary
+
+
+    def model_consistance_checker(self, models):
+        for model in models:
+            if model.labels != models[0].labels:
+                raise EnsembleException("all models in ensemble mode should have same labels and vocab dict")
+            if model.vocab != models[0].vocab:
+                raise EnsembleException("all models in ensemble mode should have same labels and vocab dict")
+
 
 
     def mean(self, models_preds):
@@ -69,7 +85,7 @@ class Ensemble(object):
         return ensemble_batch_preds
 
 
-    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5, method='mean'):
+    def _predict_text(self, batch_sequence_text, device="cpu", top_k=5, method='mean'):
         """
         :param str text: text
         :param str method: ['mean', 'hmean', 'gmean']
@@ -79,8 +95,7 @@ class Ensemble(object):
         gmean: geometric mean
 
         """
-        assert method in self.methods
-        models_preds = [model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models]
+        models_preds = [model._predict_text(batch_sequence_text, self.vocab, device="cpu", top_k=5) for model in self.models]
         models_preds_softmax = [F.softmax(preds, dim=1) for preds in models_preds]
 
         # print("original models preds")
@@ -88,31 +103,16 @@ class Ensemble(object):
 
         ensemble_batch_preds = self.methods[method](models_preds_softmax)
 
-        # print("ensembled models preds")
-        # print(ensemble_batch_preds)
-
         batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(ensemble_batch_preds), k=top_k, dim=1)
-
 
         return batch_top_k_index
 
 
 
-            # print(F.softmax(rr, dim=1))
-
-        # preds = np.array([model._predict_text(batch_sequence_text, vocab_dict, device="cpu", top_k=5) for model in self.models])
-        # print(preds.shape)
-        # return self.methods.get(method)(preds)
-
-    def get_top_label(self, text, method='log', top=5):
-        """
-        :param str text: text
-        :param str method: ['log', 'avg', 'hmean', 'gmean']
-        :param int top: top-n most possible labels
-        """
-        preds = self.predict(text, method)
-        top_index = np.argsort(preds)[::-1]
-        result = []
-        result.append([self.models[0].index2label[i] for i in top_index[:top]])
-        result.append([preds[i] for i in top_index[:top]])
-        return result
+    def predict(self, batch_sequence_text, top_k=5, method="mean"):
+        batch_top_k_index = self._predict_text(batch_sequence_text, top_k=5, method="mean")
+        batch_top_k_index = batch_top_k_index.data.cpu().numpy()
+        labels = []
+        for pred in batch_top_k_index:
+            labels.append([self.labels[idx] for idx in pred])
+        return labels
