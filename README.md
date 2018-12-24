@@ -33,8 +33,8 @@ $python3 train.py --input_data_dir {path to your origin dataset}
 
 ## Did you guys have some pre-trained models
 
-Yes, the download link will be available in soon
+Yes, the download link will be available soon
 
 ## How to setup the models for inference
 
-Basicly just setup the model and target labels, you can check examples in server.py and ensemble.py
+Basically just setup the model and target labels, you can check examples in server.py and ensemble.py
