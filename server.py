@@ -10,13 +10,11 @@ lstm_checkpoint_dir = "/data_hdd/caver_models/checkpoints_char_lstm"
 device = torch.device("cpu")
 
 model_lstm = LSTM()
-model_lstm.load(lstm_checkpoint_dir)
-model_lstm.to(device)
+model_lstm.load(lstm_checkpoint_dir, device=device)
 model_lstm.eval()
 
 model_cnn = CNN()
-model_cnn.load(cnn_checkpoint_dir)
-model_cnn.to(device)
+model_cnn.load(cnn_checkpoint_dir, device=device)
 model_cnn.eval()
 
 sentences_char = ["经 济",

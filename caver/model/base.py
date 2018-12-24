@@ -17,19 +17,19 @@ class BaseModule(torch.nn.Module):
         self.vocab = {}
 
 
-    def load(self, path):
+    def load(self, path, device):
         """ load model from file """
         # assert os.path.isfile(path)
         # self.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
         loaded_checkpoint = torch.load(os.path.join(path, "checkpoint_best.pt"),
-                                       map_location="cpu")
+                                       map_location=device)
+
         self.update_args(loaded_checkpoint["model_args"])
         self.load_state_dict(loaded_checkpoint["model_state_dict"])
         self.labels = pickle.load(open(os.path.join(path, "y_feature.p"), "rb"))
         self.TEXT= pickle.load(open(os.path.join(path, "TEXT.p"), "rb"))
         self.vocab = self.TEXT.vocab.stoi
 
-# y_feature = pickle.load(open(os.path.join(cnn_checkpoint_dir, "y_feature.p"), "rb"))
 
     def save(self, path):
         """ save model to file """
@@ -60,5 +60,3 @@ class BaseModule(torch.nn.Module):
         for pred in batch_top_k_index:
             labels.append([self.labels[idx] for idx in pred])
         return labels
-
-
