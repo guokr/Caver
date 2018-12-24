@@ -51,7 +51,10 @@ class BaseModule(torch.nn.Module):
             vars(self)[arg] = value
 
 
-    def predict_labels(self, batch_top_k_index):
+    def predict_label(self, batch_top_k_index):
+        """
+        lookup all the labels basedon own labels and top K index
+        """
         batch_top_k_index = batch_top_k_index.data.cpu().numpy()
         labels = []
         for pred in batch_top_k_index:

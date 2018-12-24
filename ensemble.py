@@ -17,6 +17,8 @@ model_lstm.load(lstm_checkpoint_dir)
 
 model_cnn.to(device)
 model_cnn.eval()
+model_lstm.to(device)
+model_lstm.eval()
 
 from caver import Ensemble
 

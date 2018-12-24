@@ -69,25 +69,27 @@ class CNN(BaseModule):
         return self.predictor(cat)
 
 
-    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
-        batch_preds = self._predict_text(batch_sequence_text=batch_sequence_text,
-                                         vocab_dict=vocab_dict,
-                                         device=device,
-                                         top_k=top_k)
+    def predict(self, batch_sequence_text, device="cpu", top_k=5):
+
+        batch_preds = self._get_model_output(batch_sequence_text=batch_sequence_text,
+                                             vocab_dict=self.vocab,
+                                             device=device)
 
         batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(batch_preds), k=top_k, dim=1)
+        labels = self.predict_label(batch_top_k_index)
+        return  labels
 
-        return batch_top_k_index
 
-
-    def _predict_text(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
+    def _get_model_output(self,*args, **kwargs):
         """
         do prediction for tokenized text in batch way
-
         CNN is special in processing <pad>
-
         vocab_dict: {"word": 1, "<pad>": 0}
         """
+        batch_sequence_text = kwargs["batch_sequence_text"]
+        vocab_dict = kwargs["vocab_dict"]
+        device = kwargs["device"]
+
 #            # print(type(vocab_dict))
 #            # sequence_text: "我 喜欢 吃 苹果"
 #            tokenized = sequence_text.split()
@@ -99,6 +101,7 @@ class CNN(BaseModule):
 #            indexed = indexed.unsqueeze(0) # set batch_size to 1
 #            preds = self.forward(indexed)
 #            return preds
+
 
         batch_tokenized = [seq.split() for seq in batch_sequence_text]
         # print(batch_tokenized)

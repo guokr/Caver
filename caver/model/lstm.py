@@ -81,6 +81,7 @@ class LSTM(BaseModule):
         #### final res = [batch_size, hidden_dim x num_directions]
         return torch.bmm(torch.transpose(rnn_out, 1, 2), weights).squeeze(2)
 
+
     def forward(self, sequence):
         #### sentence = [batch_size , sent len]
 
@@ -116,17 +117,17 @@ class LSTM(BaseModule):
         return preds
 
 
-    def predict(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
-        batch_preds = self._predict_text(batch_sequence_text=batch_sequence_text,
-                                         vocab_dict=vocab_dict,
-                                         device=device,
-                                         top_k=top_k)
+    def predict(self, batch_sequence_text, device="cpu", top_k=5):
+        batch_preds = self._get_model_output(batch_sequence_text=batch_sequence_text,
+                                             vocab_dict=self.vocab,
+                                             device=device)
 
         batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(batch_preds), k=top_k, dim=1)
-        return batch_top_k_index
+        labels = self.predict_label(batch_top_k_index)
+        return labels
 
 
-    def _predict_text(self, batch_sequence_text, vocab_dict, device="cpu", top_k=5):
+    def _get_model_output(self, batch_sequence_text, vocab_dict, device="cpu"):
         """
         do prediction for for tokenized text in batch way
 
@@ -148,4 +149,3 @@ class LSTM(BaseModule):
         indexed = torch.LongTensor(batch_indexed).to(device)
         batch_preds = self.forward(indexed)
         return batch_preds
-
