@@ -63,7 +63,10 @@ lstm_cnn_log = Ensemble([model_lstm, model_cnn])
 
 def predict(sentences):
     labels = []
-    preds = lstm_cnn_log.predict(sentences, TEXT.vocab.stoi, top_k=5)
+    preds = lstm_cnn_log.predict(sentences,
+                                 TEXT.vocab.stoi,
+                                 top_k=5,
+                                 method="gmean")
     preds = preds.data.cpu().numpy()
     for pred in preds:
         labels.append([y_feature[idx] for idx in pred])

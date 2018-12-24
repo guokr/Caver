@@ -31,7 +31,6 @@ parser.add_argument("--multi_gpu", action="store_true")
 args = parser.parse_args()
 
 def check_args():
-
     print("=============== Command Line Tools Args ===============")
     for arg, value in vars(args).items():
         print("{:>20} <===> {:<20}".format(arg, value))
@@ -228,7 +227,6 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
                 "model_args": model_args,
                 "model_state_dict": model.state_dict()},
                os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
-
 
     if len(valid_loss_history) == 0 or valid_loss < valid_loss_history[0]:
         print("| Better checkpoint found !")
