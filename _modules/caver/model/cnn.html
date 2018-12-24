@@ -215,25 +215,27 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
 
 
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="n">batch_preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_text</span><span class="p">(</span><span class="n">batch_sequence_text</span><span class="o">=</span><span class="n">batch_sequence_text</span><span class="p">,</span>
-                                         <span class="n">vocab_dict</span><span class="o">=</span><span class="n">vocab_dict</span><span class="p">,</span>
-                                         <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-                                         <span class="n">top_k</span><span class="o">=</span><span class="n">top_k</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+        <span class="n">batch_preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_output</span><span class="p">(</span><span class="n">batch_sequence_text</span><span class="o">=</span><span class="n">batch_sequence_text</span><span class="p">,</span>
+                                             <span class="n">vocab_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span>
+                                             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
         <span class="n">batch_top_k_value</span><span class="p">,</span> <span class="n">batch_top_k_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">batch_preds</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_label</span><span class="p">(</span><span class="n">batch_top_k_index</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="n">labels</span>
 
-        <span class="k">return</span> <span class="n">batch_top_k_index</span>
 
-
-    <span class="k">def</span> <span class="nf">_predict_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_model_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        do prediction for tokenized text in batch way</span>
-
 <span class="sd">        CNN is special in processing &lt;pad&gt;</span>
-
 <span class="sd">        vocab_dict: {&quot;word&quot;: 1, &quot;&lt;pad&gt;&quot;: 0}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_sequence_text</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;batch_sequence_text&quot;</span><span class="p">]</span>
+        <span class="n">vocab_dict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;vocab_dict&quot;</span><span class="p">]</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span>
+
 <span class="c1">#            # print(type(vocab_dict))</span>
 <span class="c1">#            # sequence_text: &quot;我 喜欢 吃 苹果&quot;</span>
 <span class="c1">#            tokenized = sequence_text.split()</span>
@@ -245,6 +247,7 @@
 <span class="c1">#            indexed = indexed.unsqueeze(0) # set batch_size to 1</span>
 <span class="c1">#            preds = self.forward(indexed)</span>
 <span class="c1">#            return preds</span>
+
 
         <span class="n">batch_tokenized</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">batch_sequence_text</span><span class="p">]</span>
         <span class="c1"># print(batch_tokenized)</span>
