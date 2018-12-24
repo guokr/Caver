@@ -21,12 +21,12 @@ class BaseModule(torch.nn.Module):
         """ load model from file """
         # assert os.path.isfile(path)
         # self.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
-        loaded_checkpoint = torch.load(path+"/checkpoint_best.pt",
+        loaded_checkpoint = torch.load(os.path.join(path, "checkpoint_best.pt"),
                                        map_location="cpu")
         self.update_args(loaded_checkpoint["model_args"])
         self.load_state_dict(loaded_checkpoint["model_state_dict"])
-        self.labels = pickle.load(open(path+"/y_feature.p", "rb"))
-        self.TEXT= pickle.load(open(path+"/TEXT.p", "rb"))
+        self.labels = pickle.load(open(os.path.join(path, "y_feature.p"), "rb"))
+        self.TEXT= pickle.load(open(os.path.join(path, "TEXT.p"), "rb"))
         self.vocab = self.TEXT.vocab.stoi
 
 # y_feature = pickle.load(open(os.path.join(cnn_checkpoint_dir, "y_feature.p"), "rb"))
