@@ -16,7 +16,7 @@
              alt="GitHub issues">
   </a>
   <a href="https://travis-ci.org/guokr/Caver/">
-    <img src="https://travis-ci.org/guokr/caver.svg"
+    <img src="https://travis-ci.org/guokr/Caver.svg"
          alt="Travis CI">
   </a>
 </p>
