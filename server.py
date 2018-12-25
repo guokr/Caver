@@ -1,30 +1,27 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import torch
-from caver.model import CNN, LSTM
+from caver import CaverModel
 
-cnn_checkpoint_dir = "/data_hdd/caver_models/checkpoints_char_cnn"
-lstm_checkpoint_dir = "/data_hdd/caver_models/checkpoints_char_lstm"
-
-device = torch.device("cpu")
-
-model_lstm = LSTM()
-model_lstm.load(lstm_checkpoint_dir, device=device)
-model_lstm.eval()
-
-model_cnn = CNN()
-model_cnn.load(cnn_checkpoint_dir, device=device)
-model_cnn.eval()
-
-sentences_char = ["经 济",
-                  "数 学 高 等 数 学",
-                  "篮 球 篮 球 场"]
+model_lstm = CaverModel("/data_hdd/caver_models/checkpoints_char_lstm", device="cpu")
+model_cnn = CaverModel("/data_hdd/caver_models/checkpoints_char_cnn", device="cpu")
 
 def predict(sentences):
-    labels_cnn = model_cnn.predict(sentences,top_k=5)
-    labels_lstm = model_lstm.predict(sentences,top_k=5)
+    sent_char = []
+    for sent in sentences:
+        sent_char.append(" ".join(sent))
+
+    labels_cnn = model_cnn.predict(sent_char, top_k=5)
+    labels_lstm = model_lstm.predict(sent_char, top_k=5)
     return labels_cnn, labels_lstm
 
-labels = predict(sentences_char)
-print(labels)
+sentences = ["中美经济关系如何",
+             "高等数学自学路线",
+             "科比携手姚明出任2019篮球世界杯全球大使"]
+
+labels = predict(sentences)
+
+for _ in range(len(sentences)):
+    print(sentences[_], labels[0][_], labels[1][_])
+
+

@@ -80,7 +80,7 @@ class CNN(BaseModule):
         return  labels
 
 
-    def _get_model_output(self,*args, **kwargs):
+    def _get_model_output(self, *args, **kwargs):
         """
         do prediction for tokenized text in batch way
         CNN is special in processing <pad>

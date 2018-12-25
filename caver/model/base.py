@@ -17,12 +17,13 @@ class BaseModule(torch.nn.Module):
         self.vocab = {}
 
 
-    def load(self, path, device):
+    def load(self, loaded_checkpoint, path):
         """ load model from file """
         # assert os.path.isfile(path)
         # self.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
-        loaded_checkpoint = torch.load(os.path.join(path, "checkpoint_best.pt"),
-                                       map_location=device)
+        # loaded_checkpoint = torch.load(os.path.join(path, "checkpoint_best.pt"), map_location=device)
+
+        # self.model_type = loaded_checkpoint["model_type"]
 
         self.update_args(loaded_checkpoint["model_args"])
         self.load_state_dict(loaded_checkpoint["model_state_dict"])

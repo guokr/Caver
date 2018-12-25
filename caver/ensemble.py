@@ -10,7 +10,7 @@ class EnsembleException(Exception):
     pass
 
 
-class Ensemble(object):
+class EnsembleModel(object):
     """
     :param list models: each model should have the same label number
     For now, this only support soft voting methods.
@@ -21,8 +21,8 @@ class Ensemble(object):
         self.model_consistance_checker(models)
 
         self.models = models
-        self.labels = models[0].labels
-        self.vocab = models[0].vocab
+        self.labels = models[0]._inside_model.labels
+        self.vocab = models[0]._inside_model.vocab
         self.epsilon = 1e-8
 
         self.methods = {
@@ -41,11 +41,10 @@ class Ensemble(object):
 
     def model_consistance_checker(self, models):
         for model in models:
-            if model.labels != models[0].labels:
+            if model._inside_model.labels != models[0]._inside_model.labels:
                 raise EnsembleException("all models in ensemble mode should have same labels and vocab dict")
-            if model.vocab != models[0].vocab:
+            if model._inside_model.vocab != models[0]._inside_model.vocab:
                 raise EnsembleException("all models in ensemble mode should have same labels and vocab dict")
-
 
 
     def mean(self, models_preds):
@@ -95,7 +94,8 @@ class Ensemble(object):
         gmean: geometric mean
 
         """
-        models_preds = [model._predict_text(batch_sequence_text, self.vocab, device="cpu", top_k=5) for model in self.models]
+        models_preds = [model._inside_model._get_model_output(batch_sequence_text=batch_sequence_text,
+                                                              vocab_dict=self.vocab, device="cpu") for model in self.models]
         models_preds_softmax = [F.softmax(preds, dim=1) for preds in models_preds]
 
         # print("original models preds")
@@ -106,7 +106,6 @@ class Ensemble(object):
         batch_top_k_value, batch_top_k_index = torch.topk(torch.sigmoid(ensemble_batch_preds), k=top_k, dim=1)
 
         return batch_top_k_index
-
 
 
     def predict(self, batch_sequence_text, top_k=5, method="mean"):
