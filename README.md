@@ -41,10 +41,10 @@
 from caver import CaverModel
 model = CaverModel("./checkpoint_path")
 
-sentence = ["看 英 语 学 美 剧 靠 谱 吗", "科 比 携 手 姚 明 出 任 2019 篮 球 世 界 杯 全 球 大 使"]
+sentence = ["看 美 剧 学 英 语 靠 谱 吗", "科 比 携 手 姚 明 出 任 2019 篮 球 世 界 杯 全 球 大 使"]
 
 model.predict(sentence[0], top_k=3)
->>> ['英语学习', '英语', '美剧']
+>>> ['美剧', '英语', '英语学习']
 
 model.predict(sentence[1], top_k=10)
 >>> ['篮球', 'NBA', '体育', 'NBA 球员', '运动']
