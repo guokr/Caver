@@ -281,6 +281,10 @@
 
 <span class="sd">        vocab_dict: {&quot;word&quot;: 1, &quot;&lt;pad&gt;&quot;: 0}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check valid</span>
+        <span class="c1">#TODO</span>
+
         <span class="n">batch_tokenized</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">batch_sequence_text</span><span class="p">]</span>
 
         <span class="n">batch_longest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">batch_tokenized</span><span class="p">))</span>
