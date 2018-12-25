@@ -7,8 +7,6 @@ import torch
 import numpy as np
 import math
 
-
-
 def compute_recall(array_pred, array_y):
     return float(len(np.intersect1d(array_pred, array_y)))/len(array_y)
 
