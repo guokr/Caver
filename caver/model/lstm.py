@@ -135,6 +135,10 @@ class LSTM(BaseModule):
 
         vocab_dict: {"word": 1, "<pad>": 0}
         """
+
+        # check valid
+        #TODO
+
         batch_tokenized = [seq.split() for seq in batch_sequence_text]
 
         batch_longest = max(map(len, batch_tokenized))
