@@ -274,38 +274,6 @@
     <span class="k">return</span> <span class="n">embedding</span></div>
 
 
-<span class="k">def</span> <span class="nf">compute_recall</span><span class="p">(</span><span class="n">array_pred</span><span class="p">,</span> <span class="n">array_y</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">array_pred</span><span class="p">,</span> <span class="n">array_y</span><span class="p">)))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">array_y</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">compute_precision</span><span class="p">(</span><span class="n">array_pred</span><span class="p">,</span> <span class="n">array_y</span><span class="p">):</span>
-    <span class="n">correct_num</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_pred</span><span class="p">)</span>
-    <span class="n">predict_num</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_pred</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">correct_num</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">array_pred</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">in</span> <span class="n">array_y</span><span class="p">:</span>
-            <span class="n">correct_num</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-
-    <span class="n">weighted_correct</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">weighted_predict</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">correct_num</span><span class="p">)):</span>
-        <span class="n">weighted_correct</span> <span class="o">+=</span> <span class="n">correct_num</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="mf">3.0</span><span class="p">)</span>
-        <span class="n">weighted_predict</span> <span class="o">+=</span> <span class="n">predict_num</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="mf">3.0</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">weighted_correct</span> <span class="o">/</span> <span class="n">weighted_predict</span>
-
-
-<div class="viewcode-block" id="compute_f_score"><a class="viewcode-back" href="../../detail.html#caver.utils.compute_f_score">[docs]</a><span class="k">def</span> <span class="nf">compute_f_score</span><span class="p">(</span><span class="n">recall_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">f_type</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    larget f_type if you prefer high precicion, in most cases, f1 is nice balance in recall and precision.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">coef</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">f_type</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">pr1</span> <span class="o">=</span> <span class="n">precision_score</span> <span class="o">+</span> <span class="n">recall_score</span>
-    <span class="n">pr2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">f_type</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">precision_score</span> <span class="o">+</span> <span class="n">recall_score</span>
-    <span class="k">if</span> <span class="n">pr2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">return</span> <span class="n">coef</span> <span class="o">*</span> <span class="n">pr1</span> <span class="o">/</span> <span class="n">pr2</span></div>
-
 <div class="viewcode-block" id="MiniBatchWrapper"><a class="viewcode-back" href="../../detail.html#caver.utils.MiniBatchWrapper">[docs]</a><span class="k">class</span> <span class="nc">MiniBatchWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wrap the simple torchtext iter with multiple y label</span>
