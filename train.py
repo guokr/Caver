@@ -12,6 +12,7 @@ import dill as pickle
 from torchtext.data import Field, TabularDataset, BucketIterator
 from caver.model import LSTM, FastText, CNN
 from caver.utils import MiniBatchWrapper
+from caver.evaluator import Evaluator
 
 parser = argparse.ArgumentParser(description="Caver training")
 parser.add_argument("--model", type=str, choices=["fastText", "LSTM", "CNN"],
@@ -162,45 +163,27 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
 from evaluate import evaluation
 
 def train_step(model, train_data, opt, criterion, epoch):
-    running_loss = 0.0
-    running_recall = 0.0
-    running_precision = 0.0
-    running_f_score = 0.0
-    num_sample = 0
+    evaluator = Evaluator(criterion)
     model.train()
     tqdm_progress = tqdm.tqdm(train_data, desc="| Training epoch {}/{}".format(epoch, args.epoch))
     for x, y in tqdm_progress:
         opt.zero_grad()
         preds = model(x)
         recall, precision, f_score = evaluation(preds, y)
-
-        loss = criterion(preds, y)
-        loss.backward()
+        ev = evaluator.evaluate(preds, y)
         opt.step()
 
-        num_sample += x.size(0)
-        running_loss += loss.item() * x.size(0)
-        running_recall += recall * x.size(0)
-        running_precision += precision * x.size(0)
-        running_f_score += f_score * x.size(0)
-        # ave_loss = running_loss / len(train_data)
-
-        tqdm_progress.set_postfix({"Loss":"{:.4f}".format(running_loss / num_sample),
-                                   "Recall": "{:.4f}".format(running_recall / num_sample),
-                                   "Precsion": "{:.4f}".format(running_precision / num_sample),
-                                   "F_Score": "{:.4f}".format(running_f_score / num_sample)
+        tqdm_progress.set_postfix({"Loss":"{:.4f}".format(ev[0]),
+                                   "Recall": "{:.4f}".format(ev[1]),
+                                   "Precsion": "{:.4f}".format(ev[2]),
+                                   "F_Score": "{:.4f}".format(ev[3])
                                    })
         # tqdm_progress.set_postfix({"Recall":"{:.4f}".format(recall)})
     # calculate the validation loss for this epoch
 
 
 def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epoch):
-    running_loss = 0.0
-    running_recall = 0.0
-    running_precision = 0.0
-    running_f_score = 0.0
-    valid_loss = 0.0
-    num_sample = 0
+    evaluator = Evaluator(criterion)
     model.eval()
     tqdm_progress = tqdm.tqdm(valid_data, desc="| Validating epoch {}/{}".format(epoch, args.epoch))
     for x, y in tqdm_progress:
@@ -209,32 +192,24 @@ def valid_step(model, model_args, valid_data, criterion, valid_loss_history, epo
             continue
 
         preds = model(x)
-        loss = criterion(preds, y)
-
-        recall, precision, f_score = evaluation(preds, y)
-        num_sample += x.size(0)
-        running_loss += loss.item()*x.size(0)
-        running_recall += recall * x.size(0)
-        running_precision += precision * x.size(0)
-        running_f_score += f_score * x.size(0)
-        valid_loss = loss.item()
-        tqdm_progress.set_postfix({"Loss":"{:.4f}".format(running_loss / num_sample),
-                                   "Recall": "{:.4f}".format(running_recall / num_sample),
-                                   "Precsion": "{:.4f}".format(running_precision / num_sample),
-                                   "F_Score": "{:.4f}".format(running_f_score / num_sample)
+        ev = evaluator.evaluate(preds, y, mode="eval")
+        tqdm_progress.set_postfix({"Loss":"{:.4f}".format(ev[0]),
+                                   "Recall": "{:.4f}".format(ev[1]),
+                                   "Precsion": "{:.4f}".format(ev[2]),
+                                   "F_Score": "{:.4f}".format(ev[3])
                                    })
     torch.save({"model_type": args.model,
                 "model_args": model_args,
                 "model_state_dict": model.state_dict()},
                os.path.join(args.checkpoint_dir, "checkpoint_{}.pt".format(epoch)))
 
-    if len(valid_loss_history) == 0 or valid_loss < valid_loss_history[0]:
+    if len(valid_loss_history) == 0 or ev[0] < valid_loss_history[0]:
         print("| Better checkpoint found !")
         torch.save({"model_type": args.model,
                     "model_args": model_args,
                     "model_state_dict": model.state_dict()},
                    os.path.join(args.checkpoint_dir, "checkpoint_best.pt"))
-        valid_loss_history.append(valid_loss)
+        valid_loss_history.append(ev[0])
         valid_loss_history.sort()
 
 

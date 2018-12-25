@@ -5,6 +5,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .base import BaseModule
+class InvalidInputException(Exception):
+    pass
 
 
 class CNN(BaseModule):
@@ -104,6 +106,11 @@ class CNN(BaseModule):
 
 
         batch_tokenized = [seq.split() for seq in batch_sequence_text]
+        for sent in batch_tokenized:
+            if len(sent) == 0:
+                raise InvalidInputException("Invalid Input")
+
+
         # print(batch_tokenized)
         batch_longest = max(map(len, batch_tokenized))
         batch_padding_threshold = max(max(self._filter_sizes), batch_longest)

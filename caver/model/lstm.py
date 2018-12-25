@@ -6,6 +6,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from .base import BaseModule
 
+class InvalidInputException(Exception):
+    pass
 
 class LSTM(BaseModule):
     """
@@ -136,10 +138,11 @@ class LSTM(BaseModule):
         vocab_dict: {"word": 1, "<pad>": 0}
         """
 
-        # check valid
-        #TODO
-
         batch_tokenized = [seq.split() for seq in batch_sequence_text]
+
+        for sent in batch_tokenized:
+            if len(sent) == 0:
+                raise InvalidInputException("Invalid Input")
 
         batch_longest = max(map(len, batch_tokenized))
         batch_padding_threshold = batch_longest
