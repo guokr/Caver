@@ -3,15 +3,15 @@
 <p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**. Caver uses Facebook's [PyTorch](https://pytorch.org/) project to make the implementation easier.</p>
 
 <p align="center">
-  <a href="https://pypi.org/search/?q=bert-serving">
+  <a href="https://pypi.org/project/caver/">
       <img src="https://img.shields.io/pypi/v/caver.svg?colorB=brightgreen"
            alt="Pypi package">
     </a>
-  <a href="https://github.com/hanxiao/bert-as-service/releases">
+  <a href="https://github.com/guokr/caver/releases">
       <img src="https://img.shields.io/github/release/guokr/caver.svg"
            alt="GitHub release">
   </a>
-  <a href="https://github.com/hanxiao/bert-as-service/issues">
+  <a href="https://github.com/guokr/caver/issues">
         <img src="https://img.shields.io/github/issues/guokr/caver.svg"
              alt="GitHub issues">
   </a>
@@ -24,12 +24,12 @@
   <a href="#did-you-guys-have-some-pre-trained-models">Pre-trained models</a> •
   <a href="#How-to-train-on-your-own-dataset">Train</a> •
   <a href="#more-examples">Examples</a>
-  
+  <a href="https://guokr.github.io/Caver/">Document</a>
 </p>
+
 <p align="center">
   <img src=".github/demo.gif?raw=true" width="700">
  </p>
-
 
 <h2 align="center">Quick Demo</h2>
 
@@ -45,8 +45,6 @@ model.predict(sentence[0], top_k=3)
 model.predict(sentence[1], top_k=10)
 >>> ['篮球', 'NBA', '体育', 'NBA 球员', '运动']
 ```
-
-[Documents](https://guokr.github.io/Caver)
 
 <h2 align="center">Requirements</h2>
 
