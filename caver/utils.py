@@ -128,38 +128,6 @@ def load_embedding(embedding_file, dim, vocab_size, index2word):
     return embedding
 
 
-def compute_recall(array_pred, array_y):
-    return float(len(np.intersect1d(array_pred, array_y)))/len(array_y)
-
-
-def compute_precision(array_pred, array_y):
-    correct_num = [0.0] * len(array_pred)
-    predict_num = [1.0] * len(array_pred)
-
-    for idx in range(len(correct_num)):
-        if array_pred[idx] in array_y:
-            correct_num[idx] = 1.0
-
-    weighted_correct = 0.0
-    weighted_predict = 0.0
-    for idx in range(len(correct_num)):
-        weighted_correct += correct_num[idx] / math.log(idx + 3.0)
-        weighted_predict += predict_num[idx] / math.log(idx + 3.0)
-
-    return weighted_correct / weighted_predict
-
-
-def compute_f_score(recall_score, precision_score, f_type=1):
-    """
-    larget f_type if you prefer high precicion, in most cases, f1 is nice balance in recall and precision.
-    """
-    coef = 1+math.pow(f_type, 2)
-    pr1 = precision_score + recall_score
-    pr2 = math.pow(f_type, 2) * precision_score + recall_score
-    if pr2 == 0:
-        return 0
-    return coef * pr1 / pr2
-
 class MiniBatchWrapper(object):
     """
     wrap the simple torchtext iter with multiple y label
