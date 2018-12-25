@@ -32,7 +32,7 @@
 </p>
 
 <p align="center">
-  <img src=".github/demo.gif?raw=true" width="700">
+  <img src=".github/demo.gif?raw=true" width="550">
  </p>
 
 <h2 align="center">Quick Demo</h2>
