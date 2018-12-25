@@ -1,4 +1,4 @@
-<h1 align="center">Caver<h1>
+<h1 align="center">Caver</h1>
 
 <p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**.</p>
 
@@ -18,10 +18,10 @@
 </p>
 
 <p align="center">
-  <a href="#Quick Demo">Quick Demo</a> •
-  <a href="#what-is-it">Requirements</a> •
+  <a href="#Quick-Demo">Quick Demo</a> •
+  <a href="#requirements">Requirements</a> •
   <a href="#install">Install</a> •
-  <a href="#book-tutorial">Pre-trained models</a> •
+  <a href="#did-you-guys-have-some-pre-trained-models">Pre-trained models</a> •
   <a href="#speech_balloon-faq">Train</a> •
   <a href="#zap-benchmark">Examples</a>
   
