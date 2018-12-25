@@ -1,6 +1,6 @@
 <h1 align="center">Caver</h1>
 
-<p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**.</p>
+<p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**. Caver uses Facebook's [PyTorch](https://pytorch.org/) project to make the implementation easier.</p>
 
 <p align="center">
   <a href="https://pypi.org/search/?q=bert-serving">
@@ -18,12 +18,12 @@
 </p>
 
 <p align="center">
-  <a href="#Quick-Demo">Quick Demo</a> •
+  <a href="#Quick-Demo">Demo</a> •
   <a href="#requirements">Requirements</a> •
   <a href="#install">Install</a> •
   <a href="#did-you-guys-have-some-pre-trained-models">Pre-trained models</a> •
-  <a href="#speech_balloon-faq">Train</a> •
-  <a href="#zap-benchmark">Examples</a>
+  <a href="#How-to-train-on-your-own-dataset">Train</a> •
+  <a href="#more-examples">Examples</a>
   
 </p>
 <p align="center">
@@ -35,7 +35,7 @@
 
 ```python
 from caver import CaverModel
-model = CaverModel("./checkpoint_path", device="cpu")
+model = CaverModel("./checkpoint_path")
 
 sentence = ["看 英 语 学 美 剧 靠 谱 吗", "科 比 携 手 姚 明 出 任 2019 篮 球 世 界 杯 全 球 大 使"]
 
@@ -64,7 +64,9 @@ $ pip install caver --user
 
 <h2 align="center">Did you guys have some pre-trained models</h2>
 
-Yes, we have released two pre-trained models on Zhihu NLPCC2018 open dataset.
+Yes, we have released two pre-trained models on Zhihu NLPCC2018 [opendataset](http://tcci.ccf.org.cn/conference/2018/taskdata.php).
+
+If you want to use the pre-trained model for performing text tagging, you can download it (along with other important inference material) from the Caver releases page. Alternatively, you can run the following command to download and unzip the files in your current directory:
 
 ```bash
 $ wget -O - https://github.com/guokr/Caver/releases/download/0.1/checkpoints_char_cnn.tar.gz | tar zxvf -
@@ -85,5 +87,5 @@ $ python3 train.py --input_data_dir {path to your origin dataset}
 
 ```
 
-<h2 align="center">How to setup the models for inference</h2>
-Basically just setup the model and target labels, you can check [examples](./examples).
+<h2 align="center">More Examples</h2>
+It's updating, and basically you can check [examples](./examples).
