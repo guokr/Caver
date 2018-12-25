@@ -1,6 +1,6 @@
 <h1 align="center">Caver</h1>
 
-<p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**. Caver uses Facebook's [PyTorch](https://pytorch.org/) project to make the implementation easier.</p>
+<p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**. Caver uses Facebook's <a href="https://pytorch.org/">PyTorch</a> project to make the implementation easier.</p>
 
 <p align="center">
   <a href="https://pypi.org/project/caver/">
@@ -86,4 +86,4 @@ $ python3 train.py --input_data_dir {path to your origin dataset}
 ```
 
 <h2 align="center">More Examples</h2>
-It's updating, and basically you can check [examples](./examples).
+Tt's updating, but basically you can check [examples](https://github.com/guokr/Caver/tree/master/examples).
