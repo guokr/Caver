@@ -1,6 +1,6 @@
 <h1 align="center">Caver</h1>
 
-<p align="center">Rising a torch in the cave to see the words on the wall. Tag short text in 3 lines. This is the **Caver**. Caver uses Facebook's <a href="https://pytorch.org/">PyTorch</a> project to make the implementation easier.</p>
+<p align="center">Rising a torch in the cave to see the words on the wall, tag your short text in 3 lines. Caver uses Facebook's <a href="https://pytorch.org/">PyTorch</a> project to make the implementation easier.</p>
 
 <p align="center">
   <a href="https://pypi.org/project/caver/">
@@ -23,7 +23,7 @@
   <a href="#install">Install</a> •
   <a href="#did-you-guys-have-some-pre-trained-models">Pre-trained models</a> •
   <a href="#How-to-train-on-your-own-dataset">Train</a> •
-  <a href="#more-examples">Examples</a>
+  <a href="#more-examples">Examples</a> •
   <a href="https://guokr.github.io/Caver/">Document</a>
 </p>
 
