@@ -15,14 +15,18 @@
         <img src="https://img.shields.io/github/issues/guokr/caver.svg"
              alt="GitHub issues">
   </a>
+  <a href="https://travis-ci.org/guokr/Caver/">
+    <img src="https://travis-ci.org/guokr/caver.svg"
+         alt="Travis CI">
+  </a>
 </p>
 
 <p align="center">
-  <a href="#Quick-Demo">Demo</a> •
+  <a href="#quick-demo">Demo</a> •
   <a href="#requirements">Requirements</a> •
   <a href="#install">Install</a> •
   <a href="#did-you-guys-have-some-pre-trained-models">Pre-trained models</a> •
-  <a href="#How-to-train-on-your-own-dataset">Train</a> •
+  <a href="#how-to-train-on-your-own-dataset">Train</a> •
   <a href="#more-examples">Examples</a> •
   <a href="https://guokr.github.io/Caver/">Document</a>
 </p>
