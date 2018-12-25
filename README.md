@@ -46,7 +46,7 @@ sentence = ["看 美 剧 学 英 语 靠 谱 吗", "科 比 携 手 姚 明 出 
 model.predict(sentence[0], top_k=3)
 >>> ['美剧', '英语', '英语学习']
 
-model.predict(sentence[1], top_k=10)
+model.predict(sentence[1], top_k=5)
 >>> ['篮球', 'NBA', '体育', 'NBA 球员', '运动']
 ```
 
