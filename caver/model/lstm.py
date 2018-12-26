@@ -129,6 +129,18 @@ class LSTM(BaseModule):
         return labels
 
 
+    def predict_prob(self, batch_sequence_text, device="cpu"):
+        batch_preds = self._get_model_output(batch_sequence_text=batch_sequence_text,
+                                             vocab_dict=self.vocab,
+                                             device=device)
+
+        batch_prob = torch.softmax(batch_preds, dim=1)
+
+        return batch_prob
+
+
+
+
     def _get_model_output(self, batch_sequence_text, vocab_dict, device="cpu"):
         """
         do prediction for for tokenized text in batch way

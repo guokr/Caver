@@ -45,3 +45,7 @@ class CaverModel(object):
         return res
 
 
+    def predict_prob(self, batch_sequence_text):
+        batch_prob = self._inside_model.predict_prob(batch_sequence_text)
+        return batch_prob.data.numpy()
+
