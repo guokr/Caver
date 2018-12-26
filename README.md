@@ -32,7 +32,7 @@
 </p>
 
 <p align="center">
-  <img src=".github/demo.gif?raw=true" width="700">
+  <img src=".github/demo.gif?raw=true" width="550">
  </p>
 
 <h2 align="center">Quick Demo</h2>
@@ -41,13 +41,22 @@
 from caver import CaverModel
 model = CaverModel("./checkpoint_path")
 
-sentence = ["看 英 语 学 美 剧 靠 谱 吗", "科 比 携 手 姚 明 出 任 2019 篮 球 世 界 杯 全 球 大 使"]
+sentence = ["看 美 剧 学 英 语 靠 谱 吗",
+            "科 比 携 手 姚 明 出 任 2019 篮 球 世 界 杯 全 球 大 使",
+            "如 何 在 《 权 力 的 游 戏 》 中 苟 到 最 后",
+            "英 雄 联 盟 LPL 夏 季 赛 RNG 能 否 击 败 TOP 战 队"]
 
 model.predict(sentence[0], top_k=3)
->>> ['英语学习', '英语', '美剧']
+>>> ['美剧', '英语', '英语学习']
 
-model.predict(sentence[1], top_k=10)
+model.predict(sentence[1], top_k=5)
 >>> ['篮球', 'NBA', '体育', 'NBA 球员', '运动']
+
+model.predict(sentence[2], top_k=7)
+>>> ['权力的游戏（美剧）', '美剧', '影视评论', '电视剧', '电影', '文学', '小说']
+
+model.predict(sentence[3], top_k=6)
+>>> ['英雄联盟（LoL）', '电子竞技', '英雄联盟职业联赛（LPL）', '游戏', '网络游戏', '多人联机在线竞技游戏 (MOBA)']
 ```
 
 <h2 align="center">Requirements</h2>
