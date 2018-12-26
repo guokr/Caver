@@ -52,7 +52,7 @@ model.predict(sentence[0], top_k=3)
 model.predict(sentence[1], top_k=5)
 >>> ['篮球', 'NBA', '体育', 'NBA 球员', '运动']
 
-model.predict(sentence[2]. top_k=7)
+model.predict(sentence[2], top_k=7)
 >>> ['权力的游戏（美剧）', '美剧', '影视评论', '电视剧', '电影', '文学', '小说']
 
 model.predict(sentence[3], top_k=6)
