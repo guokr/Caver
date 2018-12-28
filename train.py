@@ -115,7 +115,7 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
                                 batch_size=args.batch_size * torch.cuda.device_count(),
                                 device=device,
-                                sort_key=lambda x: len(x.tokens),
+                                sort_key=lambda x: len(x.x_feature),
                                 sort_within_batch=True)
 
     train_dataloader = MiniBatchWrapper(train_iter, x_feature, y_feature)
