@@ -46,16 +46,16 @@ sentence = ["看 美 剧 学 英 语 靠 谱 吗",
             "如 何 在 《 权 力 的 游 戏 》 中 苟 到 最 后",
             "英 雄 联 盟 LPL 夏 季 赛 RNG 能 否 击 败 TOP 战 队"]
 
-model.predict(sentence[0], top_k=3)
+model.predict([sentence[0]], top_k=3)
 >>> ['美剧', '英语', '英语学习']
 
-model.predict(sentence[1], top_k=5)
+model.predict([sentence[1]], top_k=5)
 >>> ['篮球', 'NBA', '体育', 'NBA 球员', '运动']
 
-model.predict(sentence[2], top_k=7)
+model.predict([sentence[2]], top_k=7)
 >>> ['权力的游戏（美剧）', '美剧', '影视评论', '电视剧', '电影', '文学', '小说']
 
-model.predict(sentence[3], top_k=6)
+model.predict([sentence[3]], top_k=6)
 >>> ['英雄联盟（LoL）', '电子竞技', '英雄联盟职业联赛（LPL）', '游戏', '网络游戏', '多人联机在线竞技游戏 (MOBA)']
 ```
 
