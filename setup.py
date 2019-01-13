@@ -4,17 +4,14 @@ import sys
 if sys.version_info<(3,):
     sys.exit("Sorry, Python 3 is required for Caver")
 
-with open("README.md", "r") as f:
-    readme = f.read()
-
 with open("requirements.txt", "r") as f:
     reqs = [l for l in f.read().splitlines() if l]
 
 setup(
     name="caver",
-    version="0.1",
+    version="0.2",
     description="Multi-label Text Classification Toolkit",
-    long_description=readme,
+    # long_description=readme,
     author='Guokr Inc.',
     author_email='jinyang.zhou@guokr.com',
     url="https://github.com/guokr/Caver",

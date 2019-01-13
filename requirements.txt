@@ -4,5 +4,4 @@ scipy
 scikit-learn
 tqdm
 dill
-git+git://github.com/pytorch/text@master#egg=torchtext
-
+torchtext
