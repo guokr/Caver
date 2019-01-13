@@ -115,7 +115,7 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
     train_iter, valid_iter = BucketIterator.splits((train_data, valid_data),
                                 batch_size=args.batch_size * torch.cuda.device_count(),
                                 device=device,
-                                sort_key=lambda x: len(x.x_feature),
+                                sort_key=lambda x: len(x.tokens),
                                 sort_within_batch=True)
 
     train_dataloader = MiniBatchWrapper(train_iter, x_feature, y_feature)
@@ -160,8 +160,6 @@ def train(train_data, valid_data, TEXT, x_feature, y_feature):
         train_step(model, train_dataloader, optimizer, criterion, epoch)
         valid_step(model, model_args, valid_dataloader, criterion, valid_loss_history, epoch)
 
-from evaluate import evaluation
-
 def train_step(model, train_data, opt, criterion, epoch):
     evaluator = Evaluator(criterion)
     model.train()
@@ -169,7 +167,6 @@ def train_step(model, train_data, opt, criterion, epoch):
     for x, y in tqdm_progress:
         opt.zero_grad()
         preds = model(x)
-        recall, precision, f_score = evaluation(preds, y)
         ev = evaluator.evaluate(preds, y)
         opt.step()
 
