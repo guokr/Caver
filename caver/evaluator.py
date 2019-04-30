@@ -73,7 +73,8 @@ class Evaluator(object):
         # preds_idx/target_idx: batch_size x top_k
         preds_idx_cpu = preds_idx.data.cpu().numpy()
         target_idx_cpu = target_idx.data.cpu().numpy()
-        target_value = target_idx.data.cpu().numpy()
+        # target_value = target_idx.data.cpu().numpy()
+        target_value = target_value.data.cpu().numpy()
 
         batch_recall = 0.0
         batch_precision = 0.0
