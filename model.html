@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Classify and Ensemble" href="classify.html" />
     <link rel="prev" title="Detail" href="detail.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -189,18 +191,14 @@
 <dl class="class">
 <dt id="caver.model.cnn.CNN">
 <em class="property">class </em><code class="descclassname">caver.model.cnn.</code><code class="descname">CNN</code><span class="sig-paren">(</span><em>vocab_size=1000, embedding_dim=100, filter_num=100, filter_sizes=[2, 3, 4], label_num=100, dropout=0.3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/cnn.html#CNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.cnn.CNN" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filter_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of filter</li>
-<li><strong>filter_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – size of filter</li>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of filter</p></li>
+<li><p><strong>filter_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – size of filter</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>This is the implementation of CNN from <a class="reference external" href="https://arxiv.org/pdf/1408.5882.pdf">cnn_paper</a>:
 Kim, Yoon. “Convolutional neural networks for sentence classification.” arXiv preprint arXiv:1408.5882 (2014).</p>
 <p>text -&gt; embedding -&gt; conv -&gt; relu -&gt; BatchNorm -&gt; max_pool -&gt; mlp -&gt; sigmoid</p>
@@ -212,19 +210,15 @@ Kim, Yoon. “Convolutional neural networks for sentence classification.” arXi
 <dl class="class">
 <dt id="caver.model.lstm.LSTM">
 <em class="property">class </em><code class="descclassname">caver.model.lstm.</code><code class="descname">LSTM</code><span class="sig-paren">(</span><em>hidden_dim=100</em>, <em>embedding_dim=100</em>, <em>vocab_size=1000</em>, <em>label_num=100</em>, <em>device='cpu'</em>, <em>layer_num=2</em>, <em>dropout=0.3</em>, <em>batch_first=True</em>, <em>bidirectional=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/lstm.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.lstm.LSTM" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – hidden layer dimension</li>
-<li><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – num of hidden layer</li>
-<li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</li>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – hidden layer dimension</p></li>
+<li><p><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – num of hidden layer</p></li>
+<li><p><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Simple LSTM model</p>
 <p>text -&gt; embedding -&gt; lstm -&gt; mlp -&gt; sigmoid</p>
 </dd></dl>
@@ -235,14 +229,11 @@ Kim, Yoon. “Convolutional neural networks for sentence classification.” arXi
 <dl class="class">
 <dt id="caver.model.swen.SWEN">
 <em class="property">class </em><code class="descclassname">caver.model.swen.</code><code class="descname">SWEN</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/swen.html#SWEN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.swen.SWEN" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – avg_pool window</td>
-</tr>
-</tbody>
-</table>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – avg_pool window</p>
+</dd>
+</dl>
 <p>This model is the implementation of SWEN-hier from <a class="reference external" href="https://arxiv.org/abs/1805.09843">swen_paper</a>:
 Shen, Dinghan, et al. “Baseline Needs More Love: On Simple Word-Embedding-Based Models and Associated Pooling Mechanisms.”</p>
 <p>text -&gt; embedding -&gt; avg_pool -&gt; max_pool -&gt; mlp -&gt; sigmoid</p>
@@ -254,19 +245,15 @@ Shen, Dinghan, et al. “Baseline Needs More Love: On Simple Word-Embedding-Base
 <dl class="class">
 <dt id="caver.model.han.HAN">
 <em class="property">class </em><code class="descclassname">caver.model.han.</code><code class="descname">HAN</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/han.html#HAN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.han.HAN" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – dimension of hidden layer</li>
-<li><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of hidden layer</li>
-<li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</li>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – dimension of hidden layer</p></li>
+<li><p><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of hidden layer</p></li>
+<li><p><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>This model is the implementation of HAN(only word encoder and word attention)
 from <a class="reference external" href="http://www.aclweb.org/anthology/N16-1174">han_paper</a>:
 Yang, Zichao, et al. “Hierarchical attention networks for document classification.” Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies. 2016.</p>
@@ -292,7 +279,7 @@ Yang, Zichao, et al. “Hierarchical attention networks for document classificat
         <a href="classify.html" class="btn btn-neutral float-right" title="Classify and Ensemble" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="detail.html" class="btn btn-neutral" title="Detail" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="detail.html" class="btn btn-neutral float-left" title="Detail" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -318,26 +305,16 @@ Yang, Zichao, et al. “Hierarchical attention networks for document classificat
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
