@@ -100,6 +100,4 @@ $ python3 train.py --input_data_dir {path to your origin dataset}
 
 <h2 align="center">More Examples</h2>
 
-
-
 It's updating, but basically you can check [examples](https://github.com/guokr/Caver/tree/master/examples).
