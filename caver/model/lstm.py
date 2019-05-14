@@ -139,8 +139,6 @@ class LSTM(BaseModule):
         return batch_prob
 
 
-
-
     def _get_model_output(self, batch_sequence_text, vocab_dict, device="cpu"):
         """
         do prediction for for tokenized text in batch way
