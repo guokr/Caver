@@ -1,6 +1,9 @@
 import numpy as np
 from torch import nn
 import torch
+import os
+
+
 def init_weight(layer):
     """
     Init layer weights and bias
@@ -126,6 +129,69 @@ def load_embedding(embedding_file, dim, vocab_size, index2word):
     print('word exists embedding:', count_exist, '\tword not exists:', count_not_exist)
     embedding = np.array(embedding)
     return embedding
+
+
+def check_ensemble_args(args):
+    status = True
+    if not (
+        os.path.exists(args.cnn)
+        or os.path.exists(args.lstm)
+        or os.path.exists(args.fasttext)
+    ):
+        status = False
+        print("|ERROR| no model directory is exist")
+
+    models = list(
+        filter(
+            lambda x: os.path.exists(x) == True, [args.cnn, args.lstm, args.fasttext]
+        )
+    )
+    if len(models) < 2:
+        status = False
+        print("|ERROR| numbers of model to ensemble shouldn`t less than two")
+
+    if len(args.model_ratio) > 0:
+        if len(models) != len(args.model_ratio):
+            status = False
+            print("|ERROR| model ratio numbers not equal to model numbers ")
+        elif sum(args.model_ratio.values()) != 1:
+            status = False
+            print("|ERROR| add all model`s ratio not equal one")
+
+    if len(args.sentences) == 0:
+        status = False
+        print("|ERROR| sentences list can`t be empty")
+
+    return status
+
+
+def show_ensemble_args(args):
+    dict_args = vars(args)
+    print("=============== Command Line Tools Args ===============")
+    for arg, value in dict_args.items():
+        if isinstance(value, dict) and len(value) > 0:
+            value = " ".join("{}_{}".format(k, v) for k, v in value.items())
+        elif isinstance(value, dict) and len(value) == 0:
+            continue
+        elif isinstance(value, list):
+            value = "'" + ",'".join(value) + "'"
+        elif isinstance(value, str) and value == "":
+            continue
+        print("{:>20} <===> {:<20}".format(arg, value))
+    print("=======================================================")
+
+
+def set_config(config, args_dict):
+    """
+    Update config attributes with key-value in kwargs.
+
+    Keys not in config will be ignored.
+    """
+    for key, value in args_dict.items():
+        if hasattr(config, key):
+            setattr(config, key, value)
+
+    return config
 
 
 class MiniBatchWrapper(object):

@@ -6,11 +6,12 @@ import os
 # from .base import BaseModule
 from .cnn import CNN
 from .lstm import LSTM
+from caver.config import *
 
 
 MODEL_CLASS = {
-    "CNN": CNN(),
-    "LSTM": LSTM()
+    "CNN": CNN(ConfigCNN()),
+    "LSTM": LSTM(ConfigLSTM())
 }
 
 class CaverModelInitiationTypeError(Exception):

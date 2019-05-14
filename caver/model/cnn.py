@@ -23,16 +23,14 @@ class CNN(BaseModule):
 
     text -> embedding -> conv -> relu -> BatchNorm -> max_pool -> mlp -> sigmoid
     """
-    def __init__(self, vocab_size=1000, embedding_dim=100,
-                 filter_num=100, filter_sizes=[2,3,4],
-                 label_num=100, dropout=0.3):
+    def __init__(self, config, vocab_size=1000, label_num=100):
         super().__init__()
         # self.config = update_config(ConfigCNN(), **kwargs)
         self._vocab_size = vocab_size
-        self._embedding_dim = embedding_dim
-        self._filter_sizes = filter_sizes
-        self._dropout = dropout
-        self._filter_num = filter_num
+        self._embedding_dim = config.embedding_dim
+        self._filter_sizes = config.filter_sizes
+        self._dropout = config.dropout
+        self._filter_num = config.filter_num
         self._label_num = label_num
 
         # need or not

@@ -11,10 +11,10 @@ class FastText(BaseModule):
     """
     Original FastText re-implementaion
     """
-    def __init__(self, vocab_size=1000, embedding_dim=100, label_num=100):
+    def __init__(self, config, vocab_size=1000, label_num=100):
         super().__init__()
         self._vocab_size = vocab_size
-        self._embedding_dim = embedding_dim
+        self._embedding_dim = config.embedding_dim
         self._label_num = label_num
 
         self.embedding = nn.Embedding(self._vocab_size, self._embedding_dim)

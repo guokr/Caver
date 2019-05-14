@@ -23,22 +23,23 @@ class LSTM(BaseModule):
     text -> embedding -> lstm -> mlp -> sigmoid
 
     """
-    def __init__(self, hidden_dim=100, embedding_dim=100, vocab_size=1000,
-                 label_num=100, device="cpu", layer_num=2, dropout=0.3,
-                 batch_first=True, bidirectional=True):
+    # def __init__(self, hidden_dim=100, embedding_dim=100, vocab_size=1000,
+    #              label_num=100, device="cpu", layer_num=2, dropout=0.3,
+    #              batch_first=True, bidirectional=True):
+    def __init__(self, config, vocab_size=1000, label_num=100, device="cpu", batch_first=True):
         super().__init__()
         # self.config = update_config(ConfigLSTM(), **kwargs)
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         ## starts with _ stands for static attr, otherwise nn layers
-        self._layer_num = layer_num
-        self._bidirectional = bidirectional
+        self._layer_num = config.layer_num
+        self._bidirectional = config.bidirectional
         self._device = device
-        self._hidden_dim = hidden_dim
+        self._hidden_dim = config.hidden_dim
         self._vocab_size = vocab_size
-        self._embedding_dim = embedding_dim
+        self._embedding_dim = config.embedding_dim
         self._label_num = label_num
-        self._dropout = dropout
+        self._dropout = config.dropout
         self._batch_first = batch_first
 
         self.embedding = nn.Embedding(self._vocab_size, self._embedding_dim)
