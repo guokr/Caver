@@ -11,10 +11,6 @@ note:
 2.three soft voting method,include mean，hmean，gmean. And if model_ratio arg is not empty, use weighted voting.
 3.now each chinese character is split by space, because is used for char models, not for word model
 
-To be improved:
-a.sentences cold also read from file.
-b.now the model is based on character, models alse could be based on word
-c.log method not used now
 """
 parser = argparse.ArgumentParser(description="Caver Ensemble")
 parser.add_argument(
