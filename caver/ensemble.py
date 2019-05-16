@@ -13,9 +13,9 @@ class EnsembleException(Exception):
 class EnsembleModel(object):
 
     """
-    :param models: list of models， each model should have the same label number
+    :param models: list of models, each model should have the same label number
     :type models: list
-    :param model_ratio: each model`s ratio in weighted soft voting and if this para is empty means no weighted
+    :param model_ratio: list of model`s ratio in weighted voting and empty list means no weighted
     :type model_ratio: list
 
     For now, this only support soft voting methods.
@@ -47,8 +47,8 @@ class EnsembleModel(object):
     def model_consistance_checker(self, models):
         """
         check all models have same labels and vocab dict
-        :param models: list of models
-        :return:
+
+        :param list models: list of models
         """
         for model in models:
             if model._inside_model.labels != models[0]._inside_model.labels:
@@ -62,10 +62,12 @@ class EnsembleModel(object):
 
     def mean(self, models_preds):
         """
-        mean: arithmetic mean
-        if self.model_ratio not empty, calculate weighted arithmetic mean
-        :param models_preds: each model labels predict probability
-        :return: ensemble probability for sentences
+        arithmetic mean
+
+        when class parameter model_ratio is not empty list, calculate weighted arithmetic mean
+
+        :param list models_preds: list of model predict probability
+        :return: ensemble predict probability for sentences
         """
         ensemble_batch_preds = torch.zeros(models_preds[0].shape)
         if len(self.model_ratio) == 0:
@@ -85,9 +87,12 @@ class EnsembleModel(object):
 
     def hmean(self, models_preds):
         """
-        hmean: harmonic mean
-        :param models_preds:
-        :return:
+        harmonic mean
+
+        when class parameter model_ratio is not empty list, calculate weighted harmonic mean
+
+        :param list models_preds: list of model predict probability
+        :return: ensemble predict probability for sentences
         """
         ensemble_batch_preds = torch.zeros(models_preds[0].shape)
         if len(self.model_ratio) == 0:
@@ -104,9 +109,12 @@ class EnsembleModel(object):
 
     def gmean(self, models_preds):
         """
-        gmean: geometric mean
-        :param models_preds:
-        :return:
+        geometric mean
+
+        when class parameter model_ratio is not empty list, calculate weighted harmonic mean
+
+        :param list models_preds: list of model predict probability
+        :return: ensemble predict probability for sentences
         """
         ensemble_batch_preds = torch.ones(models_preds[0].shape)
         if len(self.model_ratio) == 0:
@@ -122,14 +130,9 @@ class EnsembleModel(object):
 
     def _predict_text(self, batch_sequence_text, top_k, method):
         """
-        for each sentence in batch, fisrt get it label probability for each model, then ensemble by soft voting and model ratio, finally get ensemble probability
+        for each sentence in batch, first get it label probability for each model, then ensemble by soft voting and model ratio, finally get ensemble probability
         soft voting include ['mean', 'hmean', 'gmean']
         weighted soft voting when self.model_ratio is not empty
-
-        :param batch_sequence_text: list of sentences
-        :param top_k: top_k lables we want
-        :param method: soft voting method
-        :return:
         """
         models_preds = [
             model._inside_model._get_model_output(
@@ -152,10 +155,10 @@ class EnsembleModel(object):
     def predict(self, batch_sequence_text, top_k, method):
         """
 
-        :param batch_sequence_text: list of sentences
-        :param top_k: top_k lables we want
-        :param method: soft voting method
-        :return:
+        :param list batch_sequence_text: list of sentences
+        :param int top_k: top_k labels
+        :param str method: voting method
+        :return: top_k prediction labels
         """
         batch_top_k_index = self._predict_text(batch_sequence_text, top_k, method)
         batch_top_k_index = batch_top_k_index.data.cpu().numpy()
