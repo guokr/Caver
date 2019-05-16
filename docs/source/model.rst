@@ -20,6 +20,11 @@ LSTM
 
 .. autoclass:: caver.model.lstm.LSTM
 
+fastText
+----------
+
+.. autoclass:: caver.model.fasttext.FastText
+
 SWEN
 ---------
 

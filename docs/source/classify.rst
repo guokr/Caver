@@ -20,6 +20,6 @@ Caver
 Ensemble
 -----------
 
-.. autoclass:: caver.Ensemble
+.. autoclass:: caver.EnsembleModel
    :members:
 

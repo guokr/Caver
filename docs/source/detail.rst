@@ -11,6 +11,14 @@ Config
 .. autoclass:: caver.config.Config
    :members:
 
+.. autoclass:: caver.config.ConfigCNN
+   :members:
+
+.. autoclass:: caver.config.ConfigLSTM
+   :members:
+
+.. autoclass:: caver.config.ConfigfastText
+   :members:
 
 Data 
 ------
