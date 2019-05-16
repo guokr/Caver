@@ -11,12 +11,11 @@ class InvalidInputException(Exception):
 
 class LSTM(BaseModule):
     """
-    :param hidden_dim: hidden layer dimension
-    :type hidden_dim: int
-    :param layer_num: num of hidden layer
-    :type layer_num: int
-    :param bidirectional: use bidirectional lstm layer?
-    :type bidirectional: bool
+    :param config: ConfigLSTM which contains LSTM configures
+    :param int vocab_size: vocabulary number
+    :param int label_num: all labels number
+    :param device: cpu or gpu
+    :param bool batch_first: If True, then the input and output tensors are provided as (batch, seq, feature).
 
     Simple LSTM model
 

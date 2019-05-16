@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import dill as pickle
+import os
 
 from torchtext.data import Field, TabularDataset, BucketIterator
 from caver.model import LSTM, FastText, CNN
