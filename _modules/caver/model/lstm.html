@@ -159,34 +159,34 @@
 
 <div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../model.html#caver.model.lstm.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param hidden_dim: hidden layer dimension</span>
-<span class="sd">    :type hidden_dim: int</span>
-<span class="sd">    :param layer_num: num of hidden layer</span>
-<span class="sd">    :type layer_num: int</span>
-<span class="sd">    :param bidirectional: use bidirectional lstm layer?</span>
-<span class="sd">    :type bidirectional: bool</span>
+<span class="sd">    :param config: ConfigLSTM which contains LSTM configures</span>
+<span class="sd">    :param int vocab_size: vocabulary number</span>
+<span class="sd">    :param int label_num: all labels number</span>
+<span class="sd">    :param device: cpu or gpu</span>
+<span class="sd">    :param bool batch_first: If True, then the input and output tensors are provided as (batch, seq, feature).</span>
 
 <span class="sd">    Simple LSTM model</span>
 
 <span class="sd">    text -&gt; embedding -&gt; lstm -&gt; mlp -&gt; sigmoid</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                 <span class="n">label_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">layer_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                 <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="c1"># def __init__(self, hidden_dim=100, embedding_dim=100, vocab_size=1000,</span>
+    <span class="c1">#              label_num=100, device=&quot;cpu&quot;, layer_num=2, dropout=0.3,</span>
+    <span class="c1">#              batch_first=True, bidirectional=True):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">label_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># self.config = update_config(ConfigLSTM(), **kwargs)</span>
         <span class="c1"># self.device = torch.device(&#39;cuda&#39; if torch.cuda.is_available() else &#39;cpu&#39;)</span>
 
         <span class="c1">## starts with _ stands for static attr, otherwise nn layers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_num</span> <span class="o">=</span> <span class="n">layer_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bidirectional</span> <span class="o">=</span> <span class="n">bidirectional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_num</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">layer_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bidirectional</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">bidirectional</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="n">device</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hidden_dim</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hidden_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vocab_size</span> <span class="o">=</span> <span class="n">vocab_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_dim</span> <span class="o">=</span> <span class="n">embedding_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_dim</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">embedding_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_label_num</span> <span class="o">=</span> <span class="n">label_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dropout</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">dropout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_first</span> <span class="o">=</span> <span class="n">batch_first</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vocab_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_dim</span><span class="p">)</span>
@@ -285,8 +285,6 @@
         <span class="n">batch_prob</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">batch_preds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">batch_prob</span>
-
-
 
 
     <span class="k">def</span> <span class="nf">_get_model_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_sequence_text</span><span class="p">,</span> <span class="n">vocab_dict</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">):</span>

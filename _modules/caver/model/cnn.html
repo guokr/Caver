@@ -159,10 +159,9 @@
 
 <div class="viewcode-block" id="CNN"><a class="viewcode-back" href="../../../model.html#caver.model.cnn.CNN">[docs]</a><span class="k">class</span> <span class="nc">CNN</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param filter_num: number of filter</span>
-<span class="sd">    :type filter_num: int</span>
-<span class="sd">    :param filter_size: size of filter</span>
-<span class="sd">    :type filter_size: list</span>
+<span class="sd">    :param config: ConfigCNN which contains CNN configures</span>
+<span class="sd">    :param int vocab_size: vocabulary number</span>
+<span class="sd">    :param int label_num: all labels number</span>
 
 <span class="sd">    This is the implementation of CNN from `cnn_paper`_:</span>
 <span class="sd">    Kim, Yoon. &quot;Convolutional neural networks for sentence classification.&quot; arXiv preprint arXiv:1408.5882 (2014).</span>
@@ -171,16 +170,14 @@
 
 <span class="sd">    text -&gt; embedding -&gt; conv -&gt; relu -&gt; BatchNorm -&gt; max_pool -&gt; mlp -&gt; sigmoid</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                 <span class="n">filter_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">filter_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
-                 <span class="n">label_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">label_num</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># self.config = update_config(ConfigCNN(), **kwargs)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vocab_size</span> <span class="o">=</span> <span class="n">vocab_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_dim</span> <span class="o">=</span> <span class="n">embedding_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_sizes</span> <span class="o">=</span> <span class="n">filter_sizes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dropout</span> <span class="o">=</span> <span class="n">dropout</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_num</span> <span class="o">=</span> <span class="n">filter_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_dim</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">embedding_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_sizes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">filter_sizes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dropout</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">dropout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_num</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">filter_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_label_num</span> <span class="o">=</span> <span class="n">label_num</span>
 
         <span class="c1"># need or not</span>

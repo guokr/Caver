@@ -155,11 +155,13 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
@@ -182,6 +184,12 @@
       <li><a href="model.html#caver.model.base.BaseModule">BaseModule (class in caver.model.base)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.Config.batch_size">batch_size (caver.config.Config attribute)</a>
+</li>
+      <li><a href="detail.html#caver.config.ConfigLSTM.bidirectional">bidirectional (caver.config.ConfigLSTM attribute)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="C">C</h2>
@@ -193,15 +201,21 @@
 </li>
       <li><a href="detail.html#module-caver.utils">caver.utils (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.Config.checkpoint_dir">checkpoint_dir (caver.config.Config attribute)</a>
+</li>
       <li><a href="model.html#caver.model.cnn.CNN">CNN (class in caver.model.cnn)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="detail.html#caver.config.Config">Config (class in caver.config)</a>
 </li>
-      <li><a href="detail.html#caver.data.Segment.cut">cut() (caver.data.Segment method)</a>
+      <li><a href="detail.html#caver.config.ConfigCNN">ConfigCNN (class in caver.config)</a>
 </li>
-      <li><a href="detail.html#caver.config.Config.cut_model">cut_model (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.config.ConfigfastText">ConfigfastText (class in caver.config)</a>
+</li>
+      <li><a href="detail.html#caver.config.ConfigLSTM">ConfigLSTM (class in caver.config)</a>
+</li>
+      <li><a href="detail.html#caver.data.Segment.cut">cut() (caver.data.Segment method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -209,7 +223,7 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.drop">drop (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.config.Config.dropout">dropout (caver.config.Config attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -217,13 +231,29 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.embedding_file">embedding_file (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.config.Config.embedding_dim">embedding_dim (caver.config.Config attribute)</a>
+</li>
+      <li><a href="classify.html#caver.EnsembleModel">EnsembleModel (class in caver)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.embedding_train">embedding_train (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.config.Config.epoch">epoch (caver.config.Config attribute)</a>
 </li>
       <li><a href="detail.html#caver.data.TextData.extract">extract() (caver.data.TextData method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="model.html#caver.model.fasttext.FastText">FastText (class in caver.model.fasttext)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.ConfigCNN.filter_num">filter_num (caver.config.ConfigCNN attribute)</a>
+</li>
+      <li><a href="detail.html#caver.config.ConfigCNN.filter_sizes">filter_sizes (caver.config.ConfigCNN attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -234,6 +264,10 @@
       <li><a href="classify.html#caver.Caver.get_top_label">get_top_label() (caver.Caver method)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="classify.html#caver.EnsembleModel.gmean">gmean() (caver.EnsembleModel method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="H">H</h2>
@@ -242,18 +276,24 @@
       <li><a href="model.html#caver.model.han.HAN">HAN (class in caver.model.han)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.ConfigLSTM.hidden_dim">hidden_dim (caver.config.ConfigLSTM attribute)</a>
+</li>
+      <li><a href="classify.html#caver.EnsembleModel.hmean">hmean() (caver.EnsembleModel method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.index_path">index_path (caver.config.Config attribute)</a>
+      <li><a href="classify.html#caver.Trainer.init_model_embedding">init_model_embedding() (caver.Trainer method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="classify.html#caver.Trainer.init_model_embedding">init_model_embedding() (caver.Trainer method)</a>
-</li>
       <li><a href="detail.html#caver.utils.init_weight">init_weight() (in module caver.utils)</a>
+</li>
+      <li><a href="detail.html#caver.config.Config.input_data_dir">input_data_dir (caver.config.Config attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -261,6 +301,8 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.ConfigLSTM.layer_num">layer_num (caver.config.ConfigLSTM attribute)</a>
+</li>
       <li><a href="model.html#caver.model.base.BaseModule.load">load() (caver.model.base.BaseModule method)</a>
 </li>
       <li><a href="classify.html#caver.Caver.load_data">load_data() (caver.Caver method)</a>
@@ -271,6 +313,8 @@
 </li>
       <li><a href="detail.html#caver.data.TextData.load_index">load_index() (caver.data.TextData method)</a>
 </li>
+      <li><a href="detail.html#caver.config.Config.lr">lr (caver.config.Config attribute)</a>
+</li>
       <li><a href="model.html#caver.model.lstm.LSTM">LSTM (class in caver.model.lstm)</a>
 </li>
   </ul></td>
@@ -279,13 +323,33 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.min_label_count">min_label_count (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.config.Config.master_device">master_device (caver.config.Config attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.min_word_count">min_word_count (caver.config.Config attribute)</a>
+      <li><a href="classify.html#caver.EnsembleModel.mean">mean() (caver.EnsembleModel method)</a>
 </li>
       <li><a href="detail.html#caver.utils.MiniBatchWrapper">MiniBatchWrapper (class in caver.utils)</a>
+</li>
+      <li><a href="detail.html#caver.config.ConfigCNN.model">model (caver.config.ConfigCNN attribute)</a>
+
+      <ul>
+        <li><a href="detail.html#caver.config.ConfigLSTM.model">(caver.config.ConfigLSTM attribute)</a>
+</li>
+        <li><a href="detail.html#caver.config.ConfigfastText.model">(caver.config.ConfigfastText attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="classify.html#caver.EnsembleModel.model_consistance_checker">model_consistance_checker() (caver.EnsembleModel method)</a>
+</li>
+      <li><a href="detail.html#caver.config.Config.multi_gpu">multi_gpu (caver.config.Config attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.Config.output_data_dir">output_data_dir (caver.config.Config attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -294,7 +358,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classify.html#caver.Caver.predict">predict() (caver.Caver method)</a>
+
+      <ul>
+        <li><a href="classify.html#caver.EnsembleModel.predict">(caver.EnsembleModel method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="model.html#caver.model.base.BaseModule.predict_label">predict_label() (caver.model.base.BaseModule method)</a>
@@ -317,11 +385,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="model.html#caver.model.base.BaseModule.save">save() (caver.model.base.BaseModule method)</a>
 </li>
-      <li><a href="detail.html#caver.config.Config.save_path">save_path (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.data.Segment">Segment (class in caver.data)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.data.Segment">Segment (class in caver.data)</a>
+      <li><a href="detail.html#caver.utils.set_config">set_config() (in module caver.utils)</a>
 </li>
       <li><a href="model.html#caver.model.swen.SWEN">SWEN (class in caver.model.swen)</a>
 </li>
@@ -335,6 +403,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detail.html#caver.config.Config.train_filename">train_filename (caver.config.Config attribute)</a>
+</li>
       <li><a href="classify.html#caver.Trainer">Trainer (class in caver)</a>
 </li>
   </ul></td>
@@ -351,11 +421,7 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.valid">valid (caver.config.Config attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detail.html#caver.config.Config.valid_interval">valid_interval (caver.config.Config attribute)</a>
+      <li><a href="detail.html#caver.config.Config.valid_filename">valid_filename (caver.config.Config attribute)</a>
 </li>
   </ul></td>
 </tr></table>

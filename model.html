@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#basemodule">BaseModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cnn">CNN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lstm">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fasttext">fastText</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#swen">SWEN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#han">HAN</a></li>
 </ul>
@@ -190,12 +191,13 @@
 <h2>CNN<a class="headerlink" href="#cnn" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="caver.model.cnn.CNN">
-<em class="property">class </em><code class="descclassname">caver.model.cnn.</code><code class="descname">CNN</code><span class="sig-paren">(</span><em>vocab_size=1000, embedding_dim=100, filter_num=100, filter_sizes=[2, 3, 4], label_num=100, dropout=0.3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/cnn.html#CNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.cnn.CNN" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">caver.model.cnn.</code><code class="descname">CNN</code><span class="sig-paren">(</span><em>config</em>, <em>vocab_size=1000</em>, <em>label_num=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/cnn.html#CNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.cnn.CNN" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filter_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of filter</p></li>
-<li><p><strong>filter_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – size of filter</p></li>
+<li><p><strong>config</strong> – ConfigCNN which contains CNN configures</p></li>
+<li><p><strong>vocab_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – vocabulary number</p></li>
+<li><p><strong>label_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – all labels number</p></li>
 </ul>
 </dd>
 </dl>
@@ -209,18 +211,34 @@ Kim, Yoon. “Convolutional neural networks for sentence classification.” arXi
 <h2>LSTM<a class="headerlink" href="#lstm" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="caver.model.lstm.LSTM">
-<em class="property">class </em><code class="descclassname">caver.model.lstm.</code><code class="descname">LSTM</code><span class="sig-paren">(</span><em>hidden_dim=100</em>, <em>embedding_dim=100</em>, <em>vocab_size=1000</em>, <em>label_num=100</em>, <em>device='cpu'</em>, <em>layer_num=2</em>, <em>dropout=0.3</em>, <em>batch_first=True</em>, <em>bidirectional=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/lstm.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.lstm.LSTM" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">caver.model.lstm.</code><code class="descname">LSTM</code><span class="sig-paren">(</span><em>config</em>, <em>vocab_size=1000</em>, <em>label_num=100</em>, <em>device='cpu'</em>, <em>batch_first=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/lstm.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.lstm.LSTM" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – hidden layer dimension</p></li>
-<li><p><strong>layer_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – num of hidden layer</p></li>
-<li><p><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – use bidirectional lstm layer?</p></li>
+<li><p><strong>config</strong> – ConfigLSTM which contains LSTM configures</p></li>
+<li><p><strong>vocab_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – vocabulary number</p></li>
+<li><p><strong>label_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – all labels number</p></li>
+<li><p><strong>device</strong> – cpu or gpu</p></li>
+<li><p><strong>batch_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, then the input and output tensors are provided as (batch, seq, feature).</p></li>
 </ul>
 </dd>
 </dl>
 <p>Simple LSTM model</p>
 <p>text -&gt; embedding -&gt; lstm -&gt; mlp -&gt; sigmoid</p>
+</dd></dl>
+
+</div>
+<div class="section" id="fasttext">
+<h2>fastText<a class="headerlink" href="#fasttext" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.model.fasttext.FastText">
+<em class="property">class </em><code class="descclassname">caver.model.fasttext.</code><code class="descname">FastText</code><span class="sig-paren">(</span><em>config</em>, <em>vocab_size=1000</em>, <em>label_num=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/model/fasttext.html#FastText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.model.fasttext.FastText" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> – ConfigfastText which contains fastText configures</p>
+</dd>
+</dl>
+<p>Original FastText re-implementaion</p>
 </dd></dl>
 
 </div>

@@ -146,50 +146,74 @@
            <div itemprop="articleBody">
             
   <h1>Source code for caver.config</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-
-<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../detail.html#caver.config.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../detail.html#caver.config.Config">[docs]</a><span></span><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic config. All model config should inherit this.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#: index dir of word and label.</span>
-    <span class="n">index_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">),</span> <span class="s1">&#39;caver_index&#39;</span><span class="p">)</span>
-    <span class="n">word2index</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">index_path</span><span class="p">,</span> <span class="s1">&#39;word2index.json&#39;</span><span class="p">)</span>
-    <span class="n">label2index</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">index_path</span><span class="p">,</span> <span class="s1">&#39;label2index.json&#39;</span><span class="p">)</span>
+    <span class="c1"># #: index dir of word and label.</span>
+    <span class="c1"># index_path = os.path.join(os.path.abspath(os.path.curdir), &#39;caver_index&#39;)</span>
+    <span class="c1"># word2index = os.path.join(index_path, &#39;word2index.json&#39;)</span>
+    <span class="c1"># label2index = os.path.join(index_path, &#39;label2index.json&#39;)</span>
+    <span class="c1">#: embedding dimension</span>
     <span class="n">embedding_dim</span> <span class="o">=</span> <span class="mi">256</span>
-    <span class="n">sentence_length</span> <span class="o">=</span> <span class="mi">64</span>
-    <span class="c1">#: min word count, word frequence below this will be ignored</span>
-    <span class="n">min_word_count</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="c1"># sentence_length = 64</span>
+    <span class="c1"># #: min word count, word frequence below this will be ignored</span>
+    <span class="c1"># min_word_count = 5</span>
     <span class="c1">#: min label count, label frequence below this will be ignored</span>
-    <span class="n">min_label_count</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="c1">#: validatoin size</span>
-    <span class="n">valid</span> <span class="o">=</span> <span class="mf">0.15</span>
+    <span class="c1"># min_label_count = 100</span>
+    <span class="c1"># #: validatoin size</span>
+    <span class="c1"># valid = 0.15</span>
+    <span class="c1">#: batch size</span>
     <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">256</span>
-    <span class="n">epoches</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="c1">#: interval of validataion</span>
-    <span class="n">valid_interval</span> <span class="o">=</span> <span class="mi">200</span>
-    <span class="c1">#: racall@k</span>
+    <span class="c1">#: epoch num for train</span>
+    <span class="n">epoch</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="c1"># #: interval of validataion</span>
+    <span class="c1"># valid_interval = 200</span>
+    <span class="c1">#: recall@k</span>
     <span class="n">recall_k</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="c1">#: segment model, you can choose `jieba` or `pyltp`, if not set, `plane.segment`</span>
-    <span class="c1">#: will be uesd.</span>
-    <span class="n">cut_model</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1">#: model will be saved in this dir</span>
-    <span class="n">save_path</span> <span class="o">=</span> <span class="s1">&#39;checkpoint&#39;</span>
-    <span class="n">vocab_size</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">label_num</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1">#: pre-trained embedding file, this will be used to init embedding layer if offered.</span>
-    <span class="n">embedding_file</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1">#: train the embedding layer when training the model</span>
-    <span class="n">embedding_train</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">loss_func</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">optimizer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># #: segment model, you can choose `jieba` or `pyltp`, if not set, `plane.segment`</span>
+    <span class="c1"># #: will be uesd.</span>
+    <span class="c1"># cut_model = None</span>
+    <span class="c1"># #: model will be saved in this dir</span>
+    <span class="c1"># save_path = &#39;checkpoint&#39;</span>
+    <span class="c1"># vocab_size = None</span>
+    <span class="c1"># label_num = None</span>
+    <span class="c1"># #: pre-trained embedding file, this will be used to init embedding layer if offered.</span>
+    <span class="c1"># embedding_file = None</span>
+    <span class="c1"># #: train the embedding layer when training the model</span>
+    <span class="c1"># embedding_train = True</span>
+    <span class="c1"># loss_func = None</span>
+    <span class="c1"># optimizer = None</span>
     <span class="c1">#: dropout rate</span>
-    <span class="n">drop</span> <span class="o">=</span> <span class="mf">0.15</span></div>
+    <span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.15</span>
+    <span class="c1">#: data directory</span>
+    <span class="n">input_data_dir</span> <span class="o">=</span> <span class="s2">&quot;dataset&quot;</span>
+    <span class="c1">#: train filename</span>
+    <span class="n">train_filename</span> <span class="o">=</span> <span class="s2">&quot;nlpcc_train.tsv&quot;</span>
+    <span class="c1">#: validation filename</span>
+    <span class="n">valid_filename</span> <span class="o">=</span> <span class="s2">&quot;nlpcc_valid.tsv&quot;</span>
+    <span class="c1">#: save processed data directory</span>
+    <span class="n">output_data_dir</span> <span class="o">=</span> <span class="s2">&quot;processed_data&quot;</span>
+    <span class="c1">#: checkpoint directory</span>
+    <span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="s2">&quot;checkpoints&quot;</span>
+    <span class="c1">#: gpu device number</span>
+    <span class="n">master_device</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#: use multi gpu or not</span>
+    <span class="n">multi_gpu</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1">#: learning rate</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-4</span></div>
 
 
-<span class="k">class</span> <span class="nc">ConfigCNN</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
-    <span class="n">filter_num</span> <span class="o">=</span> <span class="mi">64</span>
-    <span class="n">filter_size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<div class="viewcode-block" id="ConfigCNN"><a class="viewcode-back" href="../../detail.html#caver.config.ConfigCNN">[docs]</a><span class="k">class</span> <span class="nc">ConfigCNN</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CNN model config.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#: model name</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="s1">&#39;CNN&#39;</span>
+    <span class="c1">#: filter number</span>
+    <span class="n">filter_num</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="c1">#: list of filter size</span>
+    <span class="n">filter_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span></div>
 
 
 <span class="k">class</span> <span class="nc">ConfigSWEN</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
@@ -197,16 +221,32 @@
     <span class="n">embedding_drop</span> <span class="o">=</span> <span class="mf">0.2</span>
 
 
-<span class="k">class</span> <span class="nc">ConfigLSTM</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+<div class="viewcode-block" id="ConfigLSTM"><a class="viewcode-back" href="../../detail.html#caver.config.ConfigLSTM">[docs]</a><span class="k">class</span> <span class="nc">ConfigLSTM</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        LSTM model config.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#: model name</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="s1">&#39;LSTM&#39;</span>
+    <span class="c1">#: hidden number</span>
     <span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">128</span>
+    <span class="c1">#: hidden layer number</span>
     <span class="n">layer_num</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">bidirectional</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1">#: use bidirectional LSTM or not</span>
+    <span class="n">bidirectional</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 <span class="k">class</span> <span class="nc">ConfigHAN</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
     <span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">64</span>
     <span class="n">layer_num</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">bidirectional</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="ConfigfastText"><a class="viewcode-back" href="../../detail.html#caver.config.ConfigfastText">[docs]</a><span class="k">class</span> <span class="nc">ConfigfastText</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        fastText model config.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#: model name</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="s1">&#39;fastText&#39;</span></div>
 </pre></div>
 
            </div>

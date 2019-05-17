@@ -175,7 +175,7 @@
 <dt id="caver.Trainer.init_model_embedding">
 <code class="descname">init_model_embedding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/process.html#Trainer.init_model_embedding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.Trainer.init_model_embedding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Init embedding layer use pre-trained model.</p>
-<p>This will be used if <a class="reference internal" href="detail.html#caver.config.Config.embedding_file" title="caver.config.Config.embedding_file"><code class="xref py py-class docutils literal notranslate"><span class="pre">caver.config.Config.embedding_file</span></code></a> is not None.</p>
+<p>This will be used if <code class="xref py py-class docutils literal notranslate"><span class="pre">caver.config.Config.embedding_file</span></code> is not None.</p>
 </dd></dl>
 
 </dd></dl>
@@ -214,7 +214,7 @@
 <dt id="caver.Caver.load_data">
 <code class="descname">load_data</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/classify.html#Caver.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.Caver.load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load word index and label index from file.</p>
-<p>If there is no JSON file saved in <a class="reference internal" href="detail.html#caver.config.Config.index_path" title="caver.config.Config.index_path"><code class="xref py py-class docutils literal notranslate"><span class="pre">caver.config.Config.index_path</span></code></a>,
+<p>If there is no JSON file saved in <code class="xref py py-class docutils literal notranslate"><span class="pre">caver.config.Config.index_path</span></code>,
 this will generate new index file.</p>
 </dd></dl>
 
@@ -222,7 +222,7 @@ this will generate new index file.</p>
 <dt id="caver.Caver.predict">
 <code class="descname">predict</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/classify.html#Caver.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.Caver.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>This text will be transformed to lower-case and segmented by
-<a class="reference internal" href="detail.html#caver.config.Config.cut_model" title="caver.config.Config.cut_model"><code class="xref py py-class docutils literal notranslate"><span class="pre">caver.config.Config.cut_model</span></code></a>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">caver.config.Config.cut_model</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -230,6 +230,93 @@ this will generate new index file.</p>
 </div>
 <div class="section" id="ensemble">
 <h2>Ensemble<a class="headerlink" href="#ensemble" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="caver.EnsembleModel">
+<em class="property">class </em><code class="descclassname">caver.</code><code class="descname">EnsembleModel</code><span class="sig-paren">(</span><em>models</em>, <em>model_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/ensemble.html#EnsembleModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.EnsembleModel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of models, each model should have the same label number</p></li>
+<li><p><strong>model_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of model`s ratio in weighted voting and empty list means no weighted</p></li>
+</ul>
+</dd>
+</dl>
+<p>For now, this only support soft voting methods.</p>
+<dl class="method">
+<dt id="caver.EnsembleModel.gmean">
+<code class="descname">gmean</code><span class="sig-paren">(</span><em>models_preds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/ensemble.html#EnsembleModel.gmean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.EnsembleModel.gmean" title="Permalink to this definition">¶</a></dt>
+<dd><p>geometric mean</p>
+<p>when class parameter model_ratio is not empty list, calculate weighted harmonic mean</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>models_preds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of model predict probability</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ensemble predict probability for sentences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="caver.EnsembleModel.hmean">
+<code class="descname">hmean</code><span class="sig-paren">(</span><em>models_preds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/ensemble.html#EnsembleModel.hmean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.EnsembleModel.hmean" title="Permalink to this definition">¶</a></dt>
+<dd><p>harmonic mean</p>
+<p>when class parameter model_ratio is not empty list, calculate weighted harmonic mean</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>models_preds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of model predict probability</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ensemble predict probability for sentences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="caver.EnsembleModel.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>models_preds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/ensemble.html#EnsembleModel.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.EnsembleModel.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>arithmetic mean</p>
+<p>when class parameter model_ratio is not empty list, calculate weighted arithmetic mean</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>models_preds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of model predict probability</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ensemble predict probability for sentences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="caver.EnsembleModel.model_consistance_checker">
+<code class="descname">model_consistance_checker</code><span class="sig-paren">(</span><em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/ensemble.html#EnsembleModel.model_consistance_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.EnsembleModel.model_consistance_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>check all models have same labels and vocab dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of models</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="caver.EnsembleModel.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>batch_sequence_text</em>, <em>top_k</em>, <em>method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/caver/ensemble.html#EnsembleModel.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#caver.EnsembleModel.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_sequence_text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of sentences</p></li>
+<li><p><strong>top_k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – top_k labels</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – voting method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>top_k prediction labels</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
