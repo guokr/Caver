@@ -9,8 +9,6 @@ import caver.ensemble_m.ensemble as ensemble
 
 
 class TestEnsemble(unittest.TestCase):
-
-
     def test_ensemble_mean(self):
         """
         unittest arithmetic mean method
@@ -65,12 +63,11 @@ class TestEnsemble(unittest.TestCase):
                     self.assertEqual(utils.myRound(m), utils.myRound(n))
         print("test geometric mean method")
 
-
     def test_ensemble_hmean(self):
-        '''
+        """
         unittest harmonic mean mean method
         :return:
-        '''
+        """
         test_preds = [
             [torch.Tensor([[0.5, 0.3, 0.2]]), torch.Tensor([[0.4, 0.3, 0.3]])],
             [torch.Tensor([[0.5, 0.3, 0.2]]), torch.Tensor([[0.4, 0.3, 0.3]])],
