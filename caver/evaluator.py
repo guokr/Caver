@@ -81,7 +81,8 @@ class Evaluator(object):
         batch_f_score = 0.0
 
         for idx in range(batch_size):
-            ground_truth_num = len(target_value[idx].nonzero())
+            # ground_truth_num = len(target_value[idx].nonzero())
+            ground_truth_num = len(target_value[idx].nonzero()[0])
             _recall = compute_recall(preds_idx_cpu[idx], target_idx_cpu[idx][:ground_truth_num])
             _precition = compute_precision(preds_idx_cpu[idx], target_idx_cpu[idx][:ground_truth_num])
             _f_score = compute_f_score(_recall, _precition)

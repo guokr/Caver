@@ -2,7 +2,7 @@ import tqdm
 from caver.evaluator import Evaluator
 import torch
 import os
-
+import sys
 
 class Trainer:
     """
@@ -20,9 +20,12 @@ class Trainer:
     def train_step(self, train_data, epoch, config):
         evaluator = Evaluator(self.criterion)
         self.model.train()
+        # tqdm_progress = tqdm.tqdm(
+        #     train_data, desc="| Training epoch {}/{}".format(epoch, config.epoch)
+        # )
         tqdm_progress = tqdm.tqdm(
-            train_data, desc="| Training epoch {}/{}".format(epoch, config.epoch)
-        )
+                train_data, mininterval=2,
+                desc="| Training epoch {}/{}".format(epoch, config.epoch), leave=False, file=sys.stdout)
         for x, y in tqdm_progress:
             self.optimizer.zero_grad()
             preds = self.model(x)
