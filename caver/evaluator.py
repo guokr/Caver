@@ -11,6 +11,7 @@ def compute_recall(array_pred, array_y):
 
 
 def compute_precision(array_pred, array_y):
+    assert len(array_pred) == len(array_y)
     correct_num = [0.0] * len(array_pred)
     predict_num = [1.0] * len(array_pred)
 
@@ -83,8 +84,10 @@ class Evaluator(object):
         for idx in range(batch_size):
             # ground_truth_num = len(target_value[idx].nonzero())
             ground_truth_num = len(target_value[idx].nonzero()[0])
-            _recall = compute_recall(preds_idx_cpu[idx], target_idx_cpu[idx][:ground_truth_num])
-            _precition = compute_precision(preds_idx_cpu[idx], target_idx_cpu[idx][:ground_truth_num])
+            # _recall = compute_recall(preds_idx_cpu[idx], target_idx_cpu[idx][:ground_truth_num])
+            # _precition = compute_precision(preds_idx_cpu[idx], target_idx_cpu[idx][:ground_truth_num])
+            _recall = compute_recall(preds_idx_cpu[idx][:ground_truth_num], target_idx_cpu[idx][:ground_truth_num])
+            _precition = compute_precision(preds_idx_cpu[idx][:ground_truth_num], target_idx_cpu[idx][:ground_truth_num])
             _f_score = compute_f_score(_recall, _precition)
 
             batch_recall += _recall
